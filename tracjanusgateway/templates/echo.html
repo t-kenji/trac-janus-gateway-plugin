@@ -1,0 +1,66 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" />
+  <head>
+    <title>Janus WebRTC Gateway: Echo</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content">
+      <h1>Echo
+        <button id="start">Start</button>
+      </h1>
+      <div class="pure-g" id="details">
+        <div class="pure-u-1">
+          <h3>Details</h3>
+          <p>Press the <code>Start</code> button above to launch the demo.</p>
+        </div>
+      </div>
+      <div class="pure-g hidden" id="videos">
+        <div class="pure-u-1 pure-u-md-1-2">
+          <div class="l-box">
+            <h3>Local Stream
+              <div class="pure-button-group hidden" role="toolbar" aria-label="...">
+                <button class="button-xsmall button-error pure-button" id="toggleaudio">Disable audio</button>
+                <button class="button-xsmall button-error pure-button" id="togglevideo">Disable video</button>
+                <button class="button-xsmall pure-button pure-button-primary">
+                  <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children">
+                      <a href="#" class="pure-menu-link" id="bitrateset">Bandwidth</a>
+                      <ul class="pure-menu-children" id="bitrate">
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="0">No limit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="128">Cap to 128kbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="256">Cap to 256kbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="512">Cap to 512kbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="1024">Cap to 1mbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="1500">Cap to 1.5mbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="2000">Cap to 2mbit</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </button>
+              </div>
+            </h3>
+          </div>
+          <div class="l-box">
+            <div id="videoleft"></div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-2">
+          <div class="l-box">
+            <h3>Remote Stream <span class="hidden" id="curres"></span> <span class="hidden" id="curbitrate"></span></h3>
+          </div>
+          <div class="l-box">
+            <div id="videoright"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

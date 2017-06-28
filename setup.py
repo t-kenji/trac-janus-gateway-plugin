@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from setuptools import setup
+from setuptools import find_packages, setup
 
 version = '0.1'
 readme = os.path.join(os.path.dirname(__file__), 'README.rst')
@@ -27,12 +27,22 @@ setup(
 
     license = 'MIT',
 
-    packages = [ 'tracjanusgateway' ],
+    packages = find_packages(exclude=['*.tests*']),
+    package_data = {
+        'tracjanusgateway': [
+            'htdocs/css/*.css',
+            'htdocs/js/*.js',
+            'htdocs/img/*.png',
+            'templates/*.html',
+        ],
+    },
     classifiers = classifiers,
     install_requires = [
         'Trac',
     ],
     entry_points = {
-        'trac.plugin': 'tracjanusgateway = tracjanusgateway'
+        'trac.plugins': [
+            'tracjanusgateway = tracjanusgateway',
+        ],
     },
 )

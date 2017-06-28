@@ -1,0 +1,91 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" />
+  <head>
+    <title>Janus WebRTC Gateway: VideoRoom</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content">
+      <h1>Video Room
+        <button id="start">Start</button>
+      </h1>
+      <div class="pure-g" id="details">
+        <div class="pure-u-1">
+          <h3>Details</h3>
+          <p>Press the <code>Start</code> button above to launch the demo.</p>
+        </div>
+      </div>
+      <div class="pure-g hidden" id="videojoin">
+        <div class="pure-u-1">
+          <div class="l-box">
+            <span id="you"></span>
+            <div class="pure-u-1" id="controls">
+              <div class="pure-button-group" role="group" aria-label="..." id="registernow">
+                <span>@</span>
+                <input type="text" placeholder="Choose a display name" id="username" onkeypress="return checkEnter(this, event);"></input>
+                <button class="button-small button-success pure-button" id="register">Join the room</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pure-g hidden" id="videos">
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+          <div class="l-box">
+            <h3>Local Video <span class="hidden" id="publisher"></span></h3>
+          </div>
+          <div class="l-box">
+            <div class="relative" id="videolocal"></div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+          <div class="l-box">
+            <h3>Remote Video #1 <span class="hidden" id="remote1"></span></h3>
+          </div>
+          <div class="l-box">
+            <div class="relative" id="videoremote1"></div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+          <div class="l-box">
+            <h3>Remote Video #2 <span class="hidden" id="remote2"></span></h3>
+          </div>
+          <div class="l-box">
+            <div class="relative" id="videoremote2"></div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+          <div class="l-box">
+            <h3>Remote Video #3 <span class="hidden" id="remote3"></span></h3>
+          </div>
+          <div class="l-box">
+            <div class="relative" id="videoremote3"></div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+          <div class="l-box">
+            <h3>Remote Video #4 <span class="hidden" id="remote4"></span></h3>
+          </div>
+          <div class="l-box">
+            <div class="relative" id="videoremote4"></div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+          <div class="l-box">
+            <h3>Remote Video #5 <span class="hidden" id="remote5"></span></h3>
+          </div>
+          <div class="l-box">
+            <div class="relative" id="videoremote5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" />
+  <head>
+    <title>Janus WebRTC Gateway: ScreenSharing</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content">
+      <h1>Screen Sharing
+        <button id="start">Start</button>
+      </h1>
+      <div class="pure-g" id="details">
+        <div class="pure-u-1">
+          <h3>Details</h3>
+          <p>Press the <code>Start</code> button above to launch the demo.</p>
+        </div>
+      </div>
+      <div class="pure-g hidden" id="screenmenu">
+        <div class="pure-u-1">
+          <div class="l-box">
+            <div class="pure-button-group hidden" role="group" aria-label="..." id="createnow">
+              <span><i class="fa fa-users fa-1"></i></span>
+              <input type="text" placeholder="Insert a title for the session" id="desc" onkeypress="return checkEnterShare(this, event);"></input>
+              <button class="button-small button-success pure-button" id="create">Share your screen</button>
+            </div>
+          </div>
+        </div>
+        <div class="pure-u-1">
+          <div class="l-box">
+            <hr />or<hr />
+          </div>
+        </div>
+        <div class="pure-u-1">
+          <div class="l-box">
+            <div class="pure-button-group hidden" role="group" aria-label="..." id="joinnow">
+              <span><i class="fa fa-play-circle-o fa-1"></i></span>
+              <input type="text" placeholder="Insert the numeric session identifier" id="roomid" onkeypress="return checkEnterJoin(this, event);"></input>
+              <button class="button-small button-success pure-button" id="join">Join an existing session</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pure-g hidden" id="room">
+        <div class="pure-u-1">
+          <div class="l-box">
+            <h3>Screen Capture
+              <span id="title"></span>
+              <span id="session"></span>
+            </h3>
+          </div>
+          <div class="l-box" id="screencapture"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
