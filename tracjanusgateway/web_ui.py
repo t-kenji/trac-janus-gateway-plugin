@@ -45,6 +45,7 @@ class JanusGatewayPlugin(Component):
         if (m is not None) and (m.group('plugin')):
             add_stylesheet(req, 'janus/css/jquery-confirm.min.css')
             add_stylesheet(req, 'janus/css/purecss-base-min.css')
+            add_stylesheet(req, 'janus/css/purecss-forms-min.css')
             add_stylesheet(req, 'janus/css/purecss-grids-min.css')
             add_stylesheet(req, 'janus/css/purecss-grids-responsive-min.css')
             add_stylesheet(req, 'janus/css/purecss-buttons-min.css')

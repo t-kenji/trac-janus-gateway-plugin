@@ -24,24 +24,24 @@
       </div>
       <div class="pure-g hidden" id="screenmenu">
         <div class="pure-u-1">
-          <div class="l-box">
-            <div class="pure-button-group hidden" role="group" aria-label="..." id="createnow">
-              <span><i class="fa fa-users fa-1"></i></span>
-              <input type="text" placeholder="Insert a title for the session" id="desc" onkeypress="return checkEnterShare(this, event);"></input>
+          <div class="l-box pure-form">
+            <div class="pure-control-group hidden" id="createnow">
+              <label for="desc"><i class="fa fa-users fa-1"></i></label>
+              <input type="text" class="pure-input-3-4" placeholder="Insert a title for the session" id="desc" onkeypress="return checkEnterShare(this, event);"></input>
               <button class="button-small button-success pure-button" id="create">Share your screen</button>
             </div>
           </div>
         </div>
         <div class="pure-u-1">
-          <div class="l-box">
-            <hr />or<hr />
+          <div class="l-box divider">
+            <hr class="pull-left" />or<hr class="pull-right" />
           </div>
         </div>
         <div class="pure-u-1">
-          <div class="l-box">
-            <div class="pure-button-group hidden" role="group" aria-label="..." id="joinnow">
-              <span><i class="fa fa-play-circle-o fa-1"></i></span>
-              <input type="text" placeholder="Insert the numeric session identifier" id="roomid" onkeypress="return checkEnterJoin(this, event);"></input>
+          <div class="l-box pure-form">
+            <div class="pure-control-group hidden" id="joinnow">
+              <label for="roomid"><i class="fa fa-play-circle-o fa-1"></i></label>
+              <input type="text" class="pure-input-3-4" placeholder="Insert the numeric session identifier" id="roomid" onkeypress="return checkEnterJoin(this, event);"></input>
               <button class="button-small button-success pure-button" id="join">Join an existing session</button>
             </div>
           </div>

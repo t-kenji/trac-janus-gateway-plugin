@@ -24,19 +24,19 @@
       </div>
       <div class="pure-g hidden" id="videocall">
         <div class="pure-u-1 pure-u-md-1-2" id="login">
-          <div class="l-box">
-            <div class="pure-button-group" role="group" aria-label="...">
-              <span><i class="fa fa-user fa-fw"></i></span>
-              <input type="text" placeholder="Choose a username" id="username" onkeypress="return checkEnter(this, event);"></input>
+          <div class="l-box pure-form">
+            <div class="pure-control-group">
+              <label for="username"><i class="fa fa-user fa-fw"></i></label>
+              <input type="text" class="pure-input-3-4" placeholder="Choose a username" id="username" onkeypress="return checkEnter(this, event);"></input>
             </div>
             <button class="button-small button-success pure-button" id="register">Register</button> <span class="hidden" id="youok"></span>
           </div>
         </div>
         <div class="pure-u-1 pure-u-md-1-2 hidden" id="phone">
-          <div class="l-box">
-            <div class="pure-button-group" role="group" aria-label="...">
-              <span><i class="fa fa-phone fa-fw"></i></span>
-              <input type="text" placeholder="Who should we call?" id="peer" onkeypress="return checkEnter(this, event);"></input>
+          <div class="l-box pure-form">
+            <div class="pure-control-group">
+              <label for="peer"><i class="fa fa-phone fa-fw"></i></label>
+              <input type="text" class="pure-input-3-4" placeholder="Who should we call?" id="peer" onkeypress="return checkEnter(this, event);"></input>
             </div>
             <button class="button-small button-success pure-button" id="call">Call</button>
           </div>
