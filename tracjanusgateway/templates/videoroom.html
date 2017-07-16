@@ -13,9 +13,12 @@
     <div id="ctxtnav" class="nav"></div>
 
     <div id="content">
-      <h1>Video Room
-        <button id="start">Start</button>
-      </h1>
+      <h1 id="room-101">Video Room @101 <button id="start-101">Start</button></h1>
+      <h1 id="room-102">Video Room @102 <button id="start-102">Start</button></h1>
+      <h1 id="room-103">Video Room @103 <button id="start-103">Start</button></h1>
+      <h1 id="room-104">Video Room @104 <button id="start-104">Start</button></h1>
+      <h1 id="room-105">Video Room @105 <button id="start-105">Start</button></h1>
+      <h1 id="room-106">Video Room @106 <button id="start-106">Start</button></h1>
       <div class="pure-g" id="details">
         <div class="pure-u-1">
           <h3>Details</h3>
@@ -29,7 +32,7 @@
             <div class="pure-u-1 pure-form" id="controls">
               <div class="pure-control-group">
                 <label for="username">@</label>
-                <input type="text" class="pure-input-3-4" placeholder="Choose a display name" id="username" onkeypress="return checkEnter(this, event);"></input>
+                <input type="text" class="pure-input-3-4" placeholder="Choose a display name" id="username" value="${username}" onkeypress="return checkEnter(this, event);"></input>
                 <button class="button-small button-success pure-button" id="register">Join the room</button>
               </div>
             </div>

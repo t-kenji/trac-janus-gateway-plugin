@@ -55,21 +55,22 @@ var opaqueId = "audiobridgetest-"+Janus.randomString(12);
 var started = false;
 var spinner = null;
 
-var myroom = 1234;	// Demo room
 var myusername = null;
 var myid = null;
 var webrtcUp = false;
 var audioenabled = false;
+var joinedroom = null;
 
 
 $(document).ready(function() {
 	// Initialize the library (all console debuggers enabled)
 	Janus.init({debug: "all", callback: function() {
 		// Use a button to start the demo
-		$('#start').click(function() {
+		var initializer = function(roomid) {
 			if(started)
 				return;
 			started = true;
+			joinedroom = roomid;
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
@@ -99,7 +100,7 @@ $(document).ready(function() {
 									$('#registernow').removeClass('hidden').show();
 									$('#register').click(registerUsername);
 									$('#username').focus();
-									$('#start').removeAttr('disabled').html("Stop")
+									$('#start-' + joinedroom).removeAttr('disabled').html("Stop")
 										.click(function() {
 											$(this).attr('disabled', true);
 											janus.destroy();
@@ -321,6 +322,55 @@ $(document).ready(function() {
 						window.location.reload();
 					}
 				});
+		}
+
+		$('#start-101').click(function() {
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(101);
+		});
+		$('#start-102').click(function() {
+			$('#room-101').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(102);
+		});
+		$('#start-103').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(103);
+		});
+		$('#start-104').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(104);
+		});
+		$('#start-105').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-106').hide();
+			initializer(105);
+		});
+		$('#start-106').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			initializer(106);
 		});
 	}});
 });
@@ -361,7 +411,7 @@ function registerUsername() {
 			$('#register').removeAttr('disabled').click(registerUsername);
 			return;
 		}
-		var register = { "request": "join", "room": myroom, "display": username };
+		var register = { "request": "join", "room": joinedroom, "display": username };
 		myusername = username;
 		mixertest.send({"message": register});
 	}

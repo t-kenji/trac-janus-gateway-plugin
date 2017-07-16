@@ -58,6 +58,14 @@ class JanusGatewayPlugin(Component):
             add_script(req, 'janus/js/spin.min.js')
             add_script(req, 'janus/js/janus.js')
 
+            if isinstance(req.remote_user, basestring):
+                username = req.remote_user
+            elif 'name' in req.session:
+                username = req.session.get('name', '')
+            else:
+                username = ''
+            data['username'] = username
+
             plugin = m.group('plugin')
             if plugin.startswith('echo'):
                 template = 'echo.html'

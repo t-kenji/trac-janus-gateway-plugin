@@ -27,7 +27,7 @@
           <div class="l-box pure-form">
             <div class="pure-control-group">
               <label for="username"><i class="fa fa-user fa-fw"></i></label>
-              <input type="text" class="pure-input-3-4" placeholder="Choose a username" id="username" onkeypress="return checkEnter(this, event);"></input>
+              <input type="text" class="pure-input-3-4" placeholder="Choose a username" id="username" value="${username}" onkeypress="return checkEnter(this, event);"></input>
             </div>
             <button class="button-small button-success pure-button" id="register">Register</button> <span class="hidden" id="youok"></span>
           </div>
@@ -36,7 +36,7 @@
           <div class="l-box pure-form">
             <div class="pure-control-group">
               <label for="peer"><i class="fa fa-phone fa-fw"></i></label>
-              <input type="text" class="pure-input-3-4" placeholder="Who should we call?" id="peer" onkeypress="return checkEnter(this, event);"></input>
+              <input type="text" class="pure-input-3-4" placeholder="Who should we call?" id="peer" value="${remote_user}" onkeypress="return checkEnter(this, event);"></input>
             </div>
             <button class="button-small button-success pure-button" id="call">Call</button>
           </div>

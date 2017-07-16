@@ -59,6 +59,7 @@ var myid = null;
 var mystream = null;
 // We use this other ID just to map our subscriptions to us
 var mypvtid = null;
+var joinedroom = null;
 
 var feeds = [];
 var bitrateTimer = [];
@@ -68,10 +69,11 @@ $(document).ready(function() {
 	// Initialize the library (all console debuggers enabled)
 	Janus.init({debug: "all", callback: function() {
 		// Use a button to start the demo
-		$('#start').click(function() {
+		var initializer = function(roomid) {
 			if(started)
 				return;
 			started = true;
+			joinedroom = roomid;
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
@@ -102,7 +104,7 @@ $(document).ready(function() {
 									$('#registernow').removeClass('hidden').show();
 									$('#register').click(registerUsername);
 									$('#username').focus();
-									$('#start').removeAttr('disabled').html("Stop")
+									$('#start-' + joinedroom).removeAttr('disabled').html("Stop")
 										.click(function() {
 											$(this).attr('disabled', true);
 											janus.destroy();
@@ -312,6 +314,55 @@ $(document).ready(function() {
 						window.location.reload();
 					}
 				});
+		}
+
+		$('#start-101').click(function() {
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(101);
+		});
+		$('#start-102').click(function() {
+			$('#room-101').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(102);
+		});
+		$('#start-103').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(103);
+		});
+		$('#start-104').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-105').hide();
+			$('#room-106').hide();
+			initializer(104);
+		});
+		$('#start-105').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-106').hide();
+			initializer(105);
+		});
+		$('#start-106').click(function() {
+			$('#room-101').hide();
+			$('#room-102').hide();
+			$('#room-103').hide();
+			$('#room-104').hide();
+			$('#room-105').hide();
+			initializer(106);
 		});
 	}});
 });
@@ -352,7 +403,7 @@ function registerUsername() {
 			$('#register').removeAttr('disabled').click(registerUsername);
 			return;
 		}
-		var register = { "request": "join", "room": 1234, "ptype": "publisher", "display": username };
+		var register = { "request": "join", "room": joinedroom, "ptype": "publisher", "display": username };
 		myusername = username;
 		sfutest.send({"message": register});
 	}
@@ -417,7 +468,7 @@ function newRemoteFeed(id, display) {
 				Janus.log("Plugin attached! (" + remoteFeed.getPlugin() + ", id=" + remoteFeed.getId() + ")");
 				Janus.log("  -- This is a subscriber");
 				// We wait for the plugin to send us an offer
-				var listen = { "request": "join", "room": 1234, "ptype": "listener", "feed": id, "private_id": mypvtid };
+				var listen = { "request": "join", "room": joinedroom, "ptype": "listener", "feed": id, "private_id": mypvtid };
 				remoteFeed.send({"message": listen});
 			},
 			error: function(error) {
@@ -476,7 +527,7 @@ function newRemoteFeed(id, display) {
 							success: function(jsep) {
 								Janus.debug("Got SDP!");
 								Janus.debug(jsep);
-								var body = { "request": "start", "room": 1234 };
+								var body = { "request": "start", "room": joinedroom };
 								remoteFeed.send({"message": body, "jsep": jsep});
 							},
 							error: function(error) {
