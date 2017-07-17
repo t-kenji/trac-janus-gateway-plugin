@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-// 		var server = "/janus";
+//		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-// 		var server = "ws://" + window.location.hostname + ":8188";
+//		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -78,10 +78,10 @@ $(document).ready(function() {
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
 				$.alert({
-                    title: "Error!",
-                    content: "No WebRTC support... ",
-                    useBootstrap: false
-                });
+					title: "Error!",
+					content: "No WebRTC support... ",
+					useBootstrap: false
+				});
 				return;
 			}
 			// Create session
@@ -113,10 +113,10 @@ $(document).ready(function() {
 								error: function(error) {
 									Janus.error("  -- Error attaching plugin...", error);
 									$.alert({
-                                        title:"Error!",
-                                        content: "Error attaching plugin... " + error,
-                                        useBootstrap: false
-                                    });
+										title:"Error!",
+										content: "Error attaching plugin... " + error,
+										useBootstrap: false
+									});
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -172,13 +172,13 @@ $(document).ready(function() {
 											// The room has been destroyed
 											Janus.warn("The room has been destroyed!");
 											$.alert({
-                                                title:"Warning!",
-                                                content: "The room has been destroyed",
-                                                buttons: {
-                                                    OK: function() {
-												        window.location.reload();
-                                                    }
-                                                }
+												title:"Warning!",
+												content: "The room has been destroyed",
+												buttons: {
+													OK: function() {
+														window.location.reload();
+													}
+												}
 											});
 										} else if(event === "event") {
 											// Any new feed to attach to?
@@ -235,10 +235,10 @@ $(document).ready(function() {
 												}
 											} else if(msg["error"] !== undefined && msg["error"] !== null) {
 												$.alert({
-                                                    title: "Error!",
-                                                    content: msg["error"],
-                                                    useBootstrap: false
-                                                });
+													title: "Error!",
+													content: msg["error"],
+													useBootstrap: false
+												});
 											}
 										}
 									}
@@ -301,13 +301,13 @@ $(document).ready(function() {
 					error: function(error) {
 						Janus.error(error);
 						$.alert({
-                            title: "Error!",
-                            content: error,
-                            buttons: {
-                                OK: function() {
-        							window.location.reload();
-                                }
-                            }
+							title: "Error!",
+							content: error,
+							buttons: {
+								OK: function() {
+									window.location.reload();
+								}
+							}
 						});
 					},
 					destroyed: function() {
@@ -316,54 +316,7 @@ $(document).ready(function() {
 				});
 		}
 
-		$('#start-101').click(function() {
-			$('#room-102').hide();
-			$('#room-103').hide();
-			$('#room-104').hide();
-			$('#room-105').hide();
-			$('#room-106').hide();
-			initializer(101);
-		});
-		$('#start-102').click(function() {
-			$('#room-101').hide();
-			$('#room-103').hide();
-			$('#room-104').hide();
-			$('#room-105').hide();
-			$('#room-106').hide();
-			initializer(102);
-		});
-		$('#start-103').click(function() {
-			$('#room-101').hide();
-			$('#room-102').hide();
-			$('#room-104').hide();
-			$('#room-105').hide();
-			$('#room-106').hide();
-			initializer(103);
-		});
-		$('#start-104').click(function() {
-			$('#room-101').hide();
-			$('#room-102').hide();
-			$('#room-103').hide();
-			$('#room-105').hide();
-			$('#room-106').hide();
-			initializer(104);
-		});
-		$('#start-105').click(function() {
-			$('#room-101').hide();
-			$('#room-102').hide();
-			$('#room-103').hide();
-			$('#room-104').hide();
-			$('#room-106').hide();
-			initializer(105);
-		});
-		$('#start-106').click(function() {
-			$('#room-101').hide();
-			$('#room-102').hide();
-			$('#room-103').hide();
-			$('#room-104').hide();
-			$('#room-105').hide();
-			initializer(106);
-		});
+		videorooms_initializer(initializer);
 	}});
 });
 
@@ -428,10 +381,10 @@ function publishOwnFeed(useAudio) {
 					 publishOwnFeed(false);
 				} else {
 					$.alert({
-                        title: "Error!",
-                        content: "WebRTC error... " + JSON.stringify(error),
-                        useBootstrap: false
-                    });
+						title: "Error!",
+						content: "WebRTC error... " + JSON.stringify(error),
+						useBootstrap: false
+					});
 					$('#publish').removeAttr('disabled').click(function() { publishOwnFeed(true); });
 				}
 			}
@@ -474,10 +427,10 @@ function newRemoteFeed(id, display) {
 			error: function(error) {
 				Janus.error("  -- Error attaching plugin...", error);
 				$.alert({
-                    title: "Error!",
-                    content: "Error attaching plugin... " + error,
-                    useBootstrap: false
-                });
+					title: "Error!",
+					content: "Error attaching plugin... " + error,
+					useBootstrap: false
+				});
 			},
 			onmessage: function(msg, jsep) {
 				Janus.debug(" ::: Got a message (listener) :::");
@@ -506,10 +459,10 @@ function newRemoteFeed(id, display) {
 						$('#remote'+remoteFeed.rfindex).removeClass('hidden').html(remoteFeed.rfdisplay).show();
 					} else if(msg["error"] !== undefined && msg["error"] !== null) {
 						$.alert({
-                            title: "Error!",
-                            content: msg["error"],
-                            useBootstrap: false
-                        });
+							title: "Error!",
+							content: msg["error"],
+							useBootstrap: false
+						});
 					} else {
 						// What has just happened?
 					}
@@ -533,10 +486,10 @@ function newRemoteFeed(id, display) {
 							error: function(error) {
 								Janus.error("WebRTC error:", error);
 								$.alert({
-                                    title: "Error!",
-                                    content: "WebRTC error... " + JSON.stringify(error),
-                                    useBootstrap: false
-                                });
+									title: "Error!",
+									content: "WebRTC error... " + JSON.stringify(error),
+									useBootstrap: false
+								});
 							}
 						});
 				}

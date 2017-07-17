@@ -7,18 +7,27 @@
   <xi:include href="layout.html" />
   <head>
     <title>Janus WebRTC Gateway: AudioRoom</title>
+    <script type="text/javascript">
+function audiorooms_initializer(initializer) {
+      <py:if test="defined('audio_rooms')">
+        <py:for each="room in audio_rooms">
+    $('#start-${room}').click(function() {
+        $('.nameplate:not(#room-${room}').hide();
+        initializer(${room});
+    });
+        </py:for>
+      </py:if>
+}
+    </script>
   </head>
 
   <body>
     <div id="ctxtnav" class="nav"></div>
 
     <div id="content">
-      <h1 id="room-101">Audio Room @101 <button id="start-101">Start</button></h1>
-      <h1 id="room-102">Audio Room @102 <button id="start-102">Start</button></h1>
-      <h1 id="room-103">Audio Room @103 <button id="start-103">Start</button></h1>
-      <h1 id="room-104">Audio Room @104 <button id="start-104">Start</button></h1>
-      <h1 id="room-105">Audio Room @105 <button id="start-105">Start</button></h1>
-      <h1 id="room-106">Audio Room @106 <button id="start-106">Start</button></h1>
+      <py:if test="defined('audio_rooms')">
+        <h1 py:for="room in audio_rooms" class="nameplate" id="room-${room}">Audio Room @${room} <button id="start-${room}">Start</button></h1>
+      </py:if>
       <div class="pure-g" id="details">
         <div class="pure-u-1">
           <h3>Details</h3>

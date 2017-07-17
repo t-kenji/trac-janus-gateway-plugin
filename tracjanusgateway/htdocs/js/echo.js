@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-// 		var server = "/janus";
+//		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-// 		var server = "ws://" + window.location.hostname + ":8188";
+//		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -70,11 +70,11 @@ $(document).ready(function() {
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
-                $.alert({
-                    title: 'Error!',
-                    content: "No WebRTC support... ",
-                    useBootstrap: false
-                });
+				$.alert({
+					title: 'Error!',
+					content: "No WebRTC support... ",
+					useBootstrap: false
+				});
 				return;
 			}
 			// Create session
@@ -83,9 +83,9 @@ $(document).ready(function() {
 					server: server,
 					// No "iceServers" is provided, meaning janus.js will use a default STUN server
 					// Here are some examples of how an iceServers field may look like to support TURN
-					// 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-					// 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-					// 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+					//		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
+					//		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+					//		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
 					// Should the Janus API require authentication, you can specify either the API secret or user token here too
 					//		token: "mytoken",
 					//	or
@@ -116,11 +116,11 @@ $(document).ready(function() {
 											},
 											error: function(error) {
 												Janus.error("WebRTC error:", error);
-                                                $.alert({
-                                                    title: 'Error!',
-                                                    content: "WebRTC error... " + JSON.stringify(error),
-                                                    useBootstrap: false
-                                                });
+												$.alert({
+													title: 'Error!',
+													content: "WebRTC error... " + JSON.stringify(error),
+													useBootstrap: false
+												});
 											}
 										});
 									$('#start').removeAttr('disabled').html("Stop")
@@ -132,11 +132,11 @@ $(document).ready(function() {
 								},
 								error: function(error) {
 									console.error("  -- Error attaching plugin...", error);
-                                    $.alert({
-                                        title: 'Error!',
-                                        content: "Error attaching plugin... " + error,
-                                        useBootstrap: false
-                                    });
+									$.alert({
+										title: 'Error!',
+										content: "Error attaching plugin... " + error,
+										useBootstrap: false
+									});
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -183,11 +183,11 @@ $(document).ready(function() {
 									if(result !== null && result !== undefined) {
 										if(result === "done") {
 											// The plugin closed the echo test
-                                            $.alert({
-                                                title: 'Error!',
-                                                content: "The Echo Test is over",
-                                                useBootstrap: false
-                                            });
+											$.alert({
+												title: 'Error!',
+												content: "The Echo Test is over",
+												useBootstrap: false
+											});
 											if(spinner !== null && spinner !== undefined)
 												spinner.stop();
 											spinner = null;
@@ -348,16 +348,16 @@ $(document).ready(function() {
 					},
 					error: function(error) {
 						Janus.error(error);
-                        $.alert({
-                            title: 'Error!',
-                            content: error,
-                            buttons: {
-                                OK: function() {
-							        window.location.reload();
-                                }
-                            },
-                            useBootstrap: false
-                        });
+						$.alert({
+							title: 'Error!',
+							content: error,
+							buttons: {
+								OK: function() {
+									window.location.reload();
+								}
+							},
+							useBootstrap: false
+						});
 					},
 					destroyed: function() {
 						window.location.reload();
@@ -380,11 +380,11 @@ function checkEnter(event) {
 function sendData() {
 	var data = $('#datasend').val();
 	if(data === "") {
-        $.alert({
-            title: 'Error!',
-            content: 'Insert a message to send on the DataChannel',
-            useBootstrap: false
-        });
+		$.alert({
+			title: 'Error!',
+			content: 'Insert a message to send on the DataChannel',
+			useBootstrap: false
+		});
 		return;
 	}
 	echotest.data({

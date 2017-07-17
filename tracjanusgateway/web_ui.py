@@ -4,7 +4,9 @@ import re
 from pkg_resources import resource_filename
 
 from genshi.builder import tag
+from trac.config import ListOption
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.util.text import unicode_quote
 from trac.web import IRequestHandler
 from trac.web.chrome import (
@@ -16,21 +18,46 @@ class JanusGatewayPlugin(Component):
     """
     """
 
-    implements(INavigationContributor, IRequestHandler, ITemplateProvider)
+    implements(INavigationContributor, IPermissionRequestor,
+               IRequestHandler, ITemplateProvider)
+
+    # Options
+
+    video_rooms = ListOption('janusgateway', 'video_rooms', (1234,),
+                             doc = """Room IDs for Janus WebRTC Gateway VideoRooms""")
+
+    audio_rooms = ListOption('janusgateway', 'audio_rooms', (1234,),
+                             doc = """Room IDs for Janus WebRTC Gateway AudioRooms""")
 
     def __init__(self):
         pass
 
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        """
+        Permisions supported by the plugin.
+        """
+        return ['JANUS_VIEW']
+
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
+        """
+        This method is only called for the `IRequestHandler` processing the
+        request.
+        """
         return 'janus'
 
     def get_navigation_items(self, req):
-        yield ('mainnav', 'janus',
-                tag.a('Janus', href = req.href.janus()))
+        """
+        """
+        if 'JANUS_VIEW' in req.perm('janus'):
+            yield ('mainnav', 'janus',
+                    tag.a('Janus', href = req.href.janus()))
 
     # IRequestHandler methods
+
     def match_request(self, req):
         return re.match(r'/janus(?:/.*)?$', req.path_info)
 
@@ -38,6 +65,8 @@ class JanusGatewayPlugin(Component):
         """
         Processing the request.
         """
+
+        req.perm('janus').assert_permission('JANUS_VIEW')
 
         data = {}
         template = 'janus.html'
@@ -65,6 +94,8 @@ class JanusGatewayPlugin(Component):
             else:
                 username = ''
             data['username'] = username
+            data['video_rooms'] = self.video_rooms
+            data['audio_rooms'] = self.audio_rooms
 
             plugin = m.group('plugin')
             if plugin.startswith('echo'):

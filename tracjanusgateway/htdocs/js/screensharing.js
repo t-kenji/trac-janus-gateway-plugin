@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-// 		var server = "/janus";
+//		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-// 		var server = "ws://" + window.location.hostname + ":8188";
+//		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -68,13 +68,13 @@ var spinner = null;
 
 // Just an helper to generate random usernames
 function randomString(len, charSet) {
-    charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var randomString = '';
-    for (var i = 0; i < len; i++) {
-    	var randomPoz = Math.floor(Math.random() * charSet.length);
-    	randomString += charSet.substring(randomPoz,randomPoz+1);
-    }
-    return randomString;
+	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	var randomString = '';
+	for (var i = 0; i < len; i++) {
+		var randomPoz = Math.floor(Math.random() * charSet.length);
+		randomString += charSet.substring(randomPoz,randomPoz+1);
+	}
+	return randomString;
 }
 
 
@@ -90,10 +90,10 @@ $(document).ready(function() {
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
 				$.alert({
-                    title: "Error!",
-                    content: "No WebRTC support... ",
-                    useBootstrap: false
-                });
+					title: "Error!",
+					content: "No WebRTC support... ",
+					useBootstrap: false
+				});
 				return;
 			}
 			// Create session
@@ -126,10 +126,10 @@ $(document).ready(function() {
 								error: function(error) {
 									Janus.error("  -- Error attaching plugin...", error);
 									$.alert({
-                                        title: "Error!",
-                                        content: "Error attaching plugin... " + error,
-                                        useBootstrap: false
-                                    });
+										title: "Error!",
+										content: "Error attaching plugin... " + error,
+										useBootstrap: false
+									});
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -152,10 +152,10 @@ $(document).ready(function() {
 									Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
 									$("#screencapture").parent().unblock();
 									$.alert({
-                                        title: "Sharing",
-                                        content: "Your screen sharing session just started: pass the <b>" + room + "</b> session identifier to those who want to attend.",
-                                        useBootstrap: false
-                                    });
+										title: "Sharing",
+										content: "Your screen sharing session just started: pass the <b>" + room + "</b> session identifier to those who want to attend.",
+										useBootstrap: false
+									});
 								},
 								onmessage: function(msg, jsep) {
 									Janus.debug(" ::: Got a message (publisher) :::");
@@ -183,10 +183,10 @@ $(document).ready(function() {
 														error: function(error) {
 															Janus.error("WebRTC error:", error);
 															$.alert({
-                                                                title: "Error!",
-                                                                content: "WebRTC error... " + JSON.stringify(error),
-                                                                useBootstrap: false
-                                                            });
+																title: "Error!",
+																content: "WebRTC error... " + JSON.stringify(error),
+																useBootstrap: false
+															});
 														}
 													});
 											} else {
@@ -221,22 +221,22 @@ $(document).ready(function() {
 												Janus.log("Publisher left: " + leaving);
 												if(role === "listener" && msg["leaving"] === source) {
 													$.alert({
-                                                        title: "Sharing",
-                                                        content: "The screen sharing session is over, the publisher left",
-                                                        buttons: {
-                                                            OK: function() {
-        														window.location.reload();
-                                                            }
-                                                        },
-                                                        useBootstrap: false
+														title: "Sharing",
+														content: "The screen sharing session is over, the publisher left",
+														buttons: {
+															OK: function() {
+																window.location.reload();
+															}
+														},
+														useBootstrap: false
 													});
 												}
 											} else if(msg["error"] !== undefined && msg["error"] !== null) {
 												$.alert({
-                                                    title: "Error!",
-                                                    content: msg["error"],
-                                                    useBootstrap: false
-                                                });
+													title: "Error!",
+													content: msg["error"],
+													useBootstrap: false
+												});
 											}
 										}
 									}
@@ -278,14 +278,14 @@ $(document).ready(function() {
 					error: function(error) {
 						Janus.error(error);
 						$.alert({
-                            title: "Error!",
-                            content: error,
-                            buttons: {
-                                OK: function() {
-        							window.location.reload();
-                                }
-                            },
-                            useBootstrap: false
+							title: "Error!",
+							content: error,
+							buttons: {
+								OK: function() {
+									window.location.reload();
+								}
+							},
+							useBootstrap: false
 						});
 					},
 					destroyed: function() {
@@ -315,23 +315,23 @@ function preShareScreen() {
 	// Make sure HTTPS is being used
 	if(window.location.protocol !== 'https:') {
 		$.alert({
-            title: "Error!",
-            content: 'Sharing your screen only works on HTTPS: click <b><a href="#" onclick="return switchToHttps();">here</a></b> to try the https:// version of this page',
-            useBootstrap: false
-        });
+			title: "Error!",
+			content: 'Sharing your screen only works on HTTPS: click <b><a href="#" onclick="return switchToHttps();">here</a></b> to try the https:// version of this page',
+			useBootstrap: false
+		});
 		$('#start').attr('disabled', true);
 		return;
 	}
 	if(!Janus.isExtensionEnabled()) {
 		$.alert({
-            title: "Error!",
-            content: "You're using a recent version of Chrome but don't have the screensharing extension installed: click <b><a href='https://chrome.google.com/webstore/detail/janus-webrtc-screensharin/hapfgfdkleiggjjpfpenajgdnfckjpaj' target='_blank'>here</a></b> to do so",
-            buttons: {
-                OK: function() {
-        			window.location.reload();
-                }
-            },
-            useBootstrap: false
+			title: "Error!",
+			content: "You're using a recent version of Chrome but don't have the screensharing extension installed: click <b><a href='https://chrome.google.com/webstore/detail/janus-webrtc-screensharin/hapfgfdkleiggjjpfpenajgdnfckjpaj' target='_blank'>here</a></b> to do so",
+			buttons: {
+				OK: function() {
+					window.location.reload();
+				}
+			},
+			useBootstrap: false
 		});
 		return;
 	}
@@ -342,10 +342,10 @@ function preShareScreen() {
 	$('#join').attr('disabled', true).unbind('click');
 	if($('#desc').val() === "") {
 		$.alert({
-            title: "Error!",
-            content: "Please insert a description for the room",
-            useBootstrap: false
-        });
+			title: "Error!",
+			content: "Please insert a description for the room",
+			useBootstrap: false
+		});
 		$('#desc').removeAttr('disabled', true);
 		$('#create').removeAttr('disabled', true).click(preShareScreen);
 		$('#roomid').removeAttr('disabled', true);
@@ -426,10 +426,10 @@ function joinScreen() {
 	var roomid = $('#roomid').val();
 	if(isNaN(roomid)) {
 		$.alert({
-            title: "Error!",
-            content: "Session identifiers are numeric only",
-            useBootstrap: false
-        });
+			title: "Error!",
+			content: "Session identifiers are numeric only",
+			useBootstrap: false
+		});
 		$('#desc').removeAttr('disabled', true);
 		$('#create').removeAttr('disabled', true).click(preShareScreen);
 		$('#roomid').removeAttr('disabled', true);
@@ -462,10 +462,10 @@ function newRemoteFeed(id, display) {
 			error: function(error) {
 				Janus.error("  -- Error attaching plugin...", error);
 				$.alert({
-                    title: "Error!",
-                    content: "Error attaching plugin... " + error,
-                    useBootstrap: false
-                });
+					title: "Error!",
+					content: "Error attaching plugin... " + error,
+					useBootstrap: false
+				});
 			},
 			onmessage: function(msg, jsep) {
 				Janus.debug(" ::: Got a message (listener) :::");
@@ -505,10 +505,10 @@ function newRemoteFeed(id, display) {
 							error: function(error) {
 								Janus.error("WebRTC error:", error);
 								$.alert({
-                                    title: "Error!",
-                                    content: "WebRTC error... " + error,
-                                    useBootstrap: false
-                                });
+									title: "Error!",
+									content: "WebRTC error... " + error,
+									useBootstrap: false
+								});
 							}
 						});
 				}
