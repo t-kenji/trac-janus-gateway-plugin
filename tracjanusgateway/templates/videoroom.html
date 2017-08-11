@@ -39,7 +39,7 @@ function videorooms_initializer(initializer) {
           <div class="l-box">
             <span id="you"></span>
             <div class="pure-u-1 pure-form" id="controls">
-              <div class="pure-control-group">
+              <div class="pure-control-group hidden" id="registernow">
                 <label for="username">@</label>
                 <input type="text" class="pure-input-3-4" placeholder="Choose a display name" id="username" value="${username}" onkeypress="return checkEnter(this, event);"></input>
                 <button class="button-small button-success pure-button" id="register">Join the room</button>
@@ -51,7 +51,26 @@ function videorooms_initializer(initializer) {
       <div class="pure-g hidden" id="videos">
         <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
           <div class="l-box">
-            <h3>Local Video <span class="hidden" id="publisher"></span></h3>
+            <h3>Local Video <span class="hidden" id="publisher"></span>
+              <div class="pure-button-group hidden" role="toolbar" aria-label="...">
+                <button class="button-xsmall pure-button pure-button-primary">
+                  <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children">
+                      <a href="#" class="pure-menu-link" id="bitrateset">Bandwidth</a>
+                      <ul class="pure-menu-children" id="bitrate">
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="0">No limit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="128">Cap to 128kbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="256">Cap to 256kbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="512">Cap to 512kbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="1024">Cap to 1mbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="1500">Cap to 1.5mbit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="2000">Cap to 2mbit</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </button>
+              </div>
+            </h3>
           </div>
           <div class="l-box">
             <div class="relative" id="videolocal"></div>

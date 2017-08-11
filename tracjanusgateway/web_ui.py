@@ -85,6 +85,7 @@ class JanusGatewayPlugin(Component):
             add_script(req, 'janus/js/jquery-confirm.min.js')
             add_script(req, 'janus/js/purecss-menus.js')
             add_script(req, 'janus/js/spin.min.js')
+            add_script(req, 'janus/js/compat.js')
             add_script(req, 'janus/js/janus.js')
 
             if isinstance(req.remote_user, basestring):

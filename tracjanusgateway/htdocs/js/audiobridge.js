@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-//		var server = "/janus";
+// 		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-//		var server = "ws://" + window.location.hostname + ":8188";
+// 		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -55,11 +55,11 @@ var opaqueId = "audiobridgetest-"+Janus.randomString(12);
 var started = false;
 var spinner = null;
 
+var joinedroom = null;
 var myusername = null;
 var myid = null;
 var webrtcUp = false;
 var audioenabled = false;
-var joinedroom = null;
 
 
 $(document).ready(function() {
@@ -74,11 +74,7 @@ $(document).ready(function() {
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
-				$.alert({
-					title:" Error!",
-					content: "No WebRTC support... ",
-					useBootstrap: false
-				});
+				bootbox.alert("No WebRTC support... ");
 				return;
 			}
 			// Create session
@@ -108,11 +104,7 @@ $(document).ready(function() {
 								},
 								error: function(error) {
 									Janus.error("  -- Error attaching plugin...", error);
-									$.alert({
-										title: "Error!",
-										content: "Error attaching plugin... " + error,
-										useBootstrap: false
-									});
+									bootbox.alert("Error attaching plugin... " + error);
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -157,11 +149,7 @@ $(document).ready(function() {
 														},
 														error: function(error) {
 															Janus.error("WebRTC error:", error);
-															$.alert({
-																title: "Error!",
-																content: "WebRTC error... " + JSON.stringify(error),
-																useBootstrap: false
-															});
+															bootbox.alert("WebRTC error... " + JSON.stringify(error));
 														}
 													});
 											}
@@ -215,15 +203,8 @@ $(document).ready(function() {
 										} else if(event === "destroyed") {
 											// The room has been destroyed
 											Janus.warn("The room has been destroyed!");
-											$.alert({
-												title: "Warning!",
-												content: "The room has been destroyed",
-												buttons: {
-													OK : function() {
-														window.location.reload();
-													}
-												},
-												useBootstrap: false
+											bootbox.alert("The room has been destroyed", function() {
+												window.location.reload();
 											});
 										} else if(event === "event") {
 											if(msg["participants"] !== undefined && msg["participants"] !== null) {
@@ -246,11 +227,17 @@ $(document).ready(function() {
 														$('#rp'+id + ' > i').hide();
 												}
 											} else if(msg["error"] !== undefined && msg["error"] !== null) {
-												$.alert({
-													title: "Error!",
-													content: msg["error"],
-													useBootstrap: false
-												});
+												if(msg["error_code"] === 485) {
+													// This is a "no such room" error: give a more meaningful description
+													bootbox.alert(
+														"<p>Apparently room <code>" + joinedroom + "</code> " +
+														"does not exist...</p><p>Do you have an updated <code>janus.plugin.audiobridge.cfg</code> " +
+														"configuration file? If not, make sure you copy the details of room <code>" + joinedroom + "</code> " +
+														"from that sample in your current configuration file, then restart Janus and try again."
+													);
+												} else {
+													bootbox.alert(msg["error"]);
+												}
 												return;
 											}
 											// Any new feed to attach to?
@@ -307,15 +294,8 @@ $(document).ready(function() {
 					},
 					error: function(error) {
 						Janus.error(error);
-						$.alert({
-							title: "Error!",
-							content: error,
-							buttons: {
-								OK: function() {
-									window.location.reload();
-								}
-							},
-							useBootstrap: false
+						bootbox.alert(error, function() {
+							window.location.reload();
 						});
 					},
 					destroyed: function() {

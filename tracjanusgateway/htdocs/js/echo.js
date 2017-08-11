@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-//		var server = "/janus";
+// 		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-//		var server = "ws://" + window.location.hostname + ":8188";
+// 		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -70,11 +70,7 @@ $(document).ready(function() {
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
-				$.alert({
-					title: 'Error!',
-					content: "No WebRTC support... ",
-					useBootstrap: false
-				});
+				bootbox.alert("No WebRTC support... ");
 				return;
 			}
 			// Create session
@@ -83,9 +79,9 @@ $(document).ready(function() {
 					server: server,
 					// No "iceServers" is provided, meaning janus.js will use a default STUN server
 					// Here are some examples of how an iceServers field may look like to support TURN
-					//		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-					//		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-					//		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+					// 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
+					// 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+					// 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
 					// Should the Janus API require authentication, you can specify either the API secret or user token here too
 					//		token: "mytoken",
 					//	or
@@ -116,11 +112,7 @@ $(document).ready(function() {
 											},
 											error: function(error) {
 												Janus.error("WebRTC error:", error);
-												$.alert({
-													title: 'Error!',
-													content: "WebRTC error... " + JSON.stringify(error),
-													useBootstrap: false
-												});
+												bootbox.alert("WebRTC error... " + JSON.stringify(error));
 											}
 										});
 									$('#start').removeAttr('disabled').html("Stop")
@@ -132,11 +124,7 @@ $(document).ready(function() {
 								},
 								error: function(error) {
 									console.error("  -- Error attaching plugin...", error);
-									$.alert({
-										title: 'Error!',
-										content: "Error attaching plugin... " + error,
-										useBootstrap: false
-									});
+									bootbox.alert("Error attaching plugin... " + error);
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -183,11 +171,7 @@ $(document).ready(function() {
 									if(result !== null && result !== undefined) {
 										if(result === "done") {
 											// The plugin closed the echo test
-											$.alert({
-												title: 'Error!',
-												content: "The Echo Test is over",
-												useBootstrap: false
-											});
+											bootbox.alert("The Echo Test is over");
 											if(spinner !== null && spinner !== undefined)
 												spinner.stop();
 											spinner = null;
@@ -199,6 +183,12 @@ $(document).ready(function() {
 											$('#bitrate').attr('disabled', true);
 											$('#curbitrate').hide();
 											$('#curres').hide();
+											return;
+										}
+										// Any loss?
+										var status = result["status"];
+										if(status === "slow_link") {
+											Janus.warn("Janus apparently missed many packets we sent, maybe we should reduce the bitrate");
 										}
 									}
 								},
@@ -254,14 +244,6 @@ $(document).ready(function() {
 											var width = this.videoWidth;
 											var height = this.videoHeight;
 											$('#curres').removeClass('hidden').text(width+'x'+height).show();
-											if(adapter.browserDetails.browser === "firefox") {
-												// Firefox Stable has a bug: width and height are not immediately available after a playing
-												setTimeout(function() {
-													var width = $("#peervideo").get(0).videoWidth;
-													var height = $("#peervideo").get(0).videoHeight;
-													$('#curres').removeClass('hidden').text(width+'x'+height).show();
-												}, 2000);
-											}
 										});
 									}
 									Janus.attachMediaStream($('#peervideo').get(0), stream);
@@ -309,13 +291,19 @@ $(document).ready(function() {
 										echotest.send({"message": { "bitrate": bitrate }});
 										return false;
 									});
-									if(adapter.browserDetails.browser === "chrome" || adapter.browserDetails.browser === "firefox") {
+									if(adapter.browserDetails.browser === "chrome" || adapter.browserDetails.browser === "firefox" ||
+											adapter.browserDetails.browser === "safari") {
 										$('#curbitrate').removeClass('hidden').show();
 										bitrateTimer = setInterval(function() {
 											// Display updated bitrate, if supported
 											var bitrate = echotest.getBitrate();
 											//~ Janus.debug("Current bitrate is " + echotest.getBitrate());
 											$('#curbitrate').text(bitrate);
+											// Check if the resolution changed too
+											var width = $("#peervideo").get(0).videoWidth;
+											var height = $("#peervideo").get(0).videoHeight;
+											if(width > 0 && height > 0)
+												$('#curres').removeClass('hidden').text(width+'x'+height).show();
 										}, 1000);
 									}
 								},
@@ -348,15 +336,8 @@ $(document).ready(function() {
 					},
 					error: function(error) {
 						Janus.error(error);
-						$.alert({
-							title: 'Error!',
-							content: error,
-							buttons: {
-								OK: function() {
-									window.location.reload();
-								}
-							},
-							useBootstrap: false
+						bootbox.alert(error, function() {
+							window.location.reload();
 						});
 					},
 					destroyed: function() {
@@ -380,16 +361,12 @@ function checkEnter(event) {
 function sendData() {
 	var data = $('#datasend').val();
 	if(data === "") {
-		$.alert({
-			title: 'Error!',
-			content: 'Insert a message to send on the DataChannel',
-			useBootstrap: false
-		});
+		bootbox.alert('Insert a message to send on the DataChannel');
 		return;
 	}
 	echotest.data({
 		text: data,
-		error: function(reason) { $.alert({title:'Error!',content:reason,useBootstrap:false}); },
+		error: function(reason) { bootbox.alert(reason); },
 		success: function() { $('#datasend').val(''); },
 	});
 }

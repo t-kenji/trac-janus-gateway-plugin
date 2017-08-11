@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-//		var server = "/janus";
+// 		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-//		var server = "ws://" + window.location.hostname + ":8188";
+// 		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -73,11 +73,7 @@ $(document).ready(function() {
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
-				$.alert({
-					title: "Error1",
-					content: "No WebRTC support... ",
-					useBootstrap: false
-				});
+				bootbox.alert("No WebRTC support... ");
 				return;
 			}
 			// Create session
@@ -108,11 +104,7 @@ $(document).ready(function() {
 								},
 								error: function(error) {
 									Janus.error("  -- Error attaching plugin...", error);
-									$.alert({
-										title: "Error!",
-										content: "	-- Error attaching plugin... " + error,
-										useBootstrap: false
-									});
+									bootbox.alert("  -- Error attaching plugin... " + error);
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -167,19 +159,16 @@ $(document).ready(function() {
 											} else if(event === 'calling') {
 												Janus.log("Waiting for the peer to answer...");
 												// TODO Any ringtone?
-												$.alert({
-													title: "Outgoing call",
-													content: "Waiting for the peer to answer...",
-													useBootstrap: false
-												});
+												bootbox.alert("Waiting for the peer to answer...");
 											} else if(event === 'incomingcall') {
 												Janus.log("Incoming call from " + result["username"] + "!");
 												yourusername = result["username"];
 												// Notify user
-												//bootbox.hideAll();
-												incoming = $.confirm({
+												bootbox.hideAll();
+												incoming = bootbox.dialog({
+													message: "Incoming call from " + yourusername + "!",
 													title: "Incoming call",
-													content: "Incoming call from " + yourusername + "!",
+													closeButton: false,
 													buttons: {
 														success: {
 															text: "Answer",
@@ -204,11 +193,7 @@ $(document).ready(function() {
 																		},
 																		error: function(error) {
 																			Janus.error("WebRTC error:", error);
-																			$.alert({
-																				title: "Error!",
-																				content: "WebRTC error... " + JSON.stringify(error),
-																				useBootstrap: false
-																			});
+																			bootbox.alert("WebRTC error... " + JSON.stringify(error));
 																		}
 																	});
 															}
@@ -220,11 +205,10 @@ $(document).ready(function() {
 																doHangup();
 															}
 														}
-													},
-													useBootstrap: false
+													}
 												});
 											} else if(event === 'accepted') {
-												//bootbox.hideAll();
+												bootbox.hideAll();
 												var peer = result["username"];
 												if(peer === null || peer === undefined) {
 													Janus.log("Call started!");
@@ -241,7 +225,7 @@ $(document).ready(function() {
 											} else if(event === 'hangup') {
 												Janus.log("Call hung up by " + result["username"] + " (" + result["reason"] + ")!");
 												// Reset status
-												//bootbox.hideAll();
+												bootbox.hideAll();
 												videocall.hangup();
 												if(spinner !== null && spinner !== undefined)
 													spinner.stop();
@@ -261,11 +245,7 @@ $(document).ready(function() {
 									} else {
 										// FIXME Error?
 										var error = msg["error"];
-										$.alert({
-											title: "Error!",
-											content: error,
-											useBootstrap: false
-										});
+										bootbox.alert(error);
 										if(error.indexOf("already taken") > 0) {
 											// FIXME Use status codes...
 											$('#username').removeAttr('disabled').val("");
@@ -341,14 +321,6 @@ $(document).ready(function() {
 										var width = this.videoWidth;
 										var height = this.videoHeight;
 										$('#curres').removeClass('hidden').text(width+'x'+height).show();
-										if(adapter.browserDetails.browser === "firefox") {
-											// Firefox Stable has a bug: width and height are not immediately available after a playing
-											setTimeout(function() {
-												var width = $("#remotevideo").get(0).videoWidth;
-												var height = $("#remotevideo").get(0).videoHeight;
-												$('#curres').removeClass('hidden').text(width+'x'+height).show();
-											}, 2000);
-										}
 									});
 									Janus.attachMediaStream($('#remotevideo').get(0), stream);
 									var videoTracks = stream.getVideoTracks();
@@ -399,12 +371,18 @@ $(document).ready(function() {
 										videocall.send({"message": { "request": "set", "bitrate": bitrate }});
 										return false;
 									});
-									if(adapter.browserDetails.browser === "chrome" || adapter.browserDetails.browser === "firefox") {
+									if(adapter.browserDetails.browser === "chrome" || adapter.browserDetails.browser === "firefox" ||
+											adapter.browserDetails.browser === "safari") {
 										$('#curbitrate').removeClass('hidden').show();
 										bitrateTimer = setInterval(function() {
 											// Display updated bitrate, if supported
 											var bitrate = videocall.getBitrate();
 											$('#curbitrate').text(bitrate);
+											// Check if the resolution changed too
+											var width = $("#remotevideo").get(0).videoWidth;
+											var height = $("#remotevideo").get(0).videoHeight;
+											if(width > 0 && height > 0)
+												$('#curres').removeClass('hidden').text(width+'x'+height).show();
 										}, 1000);
 									}
 								},
@@ -446,14 +424,8 @@ $(document).ready(function() {
 					},
 					error: function(error) {
 						Janus.error(error);
-						$.alert({
-							title: "Error!",
-							content: error,
-							buttons: {
-								OK: function() {
-									window.location.reload();
-								}
-							}
+						bootbox.alert(error, function() {
+							window.location.reload();
 						});
 					},
 					destroyed: function() {
@@ -485,21 +457,13 @@ function registerUsername() {
 	$('#register').attr('disabled', true).unbind('click');
 	var username = $('#username').val();
 	if(username === "") {
-		$.alert({
-			title: "Error!",
-			content: "Insert a username to register (e.g., pippo)",
-			useBootstrap: false
-		});
+		bootbox.alert("Insert a username to register (e.g., pippo)");
 		$('#username').removeAttr('disabled');
 		$('#register').removeAttr('disabled').click(registerUsername);
 		return;
 	}
 	if(/[^a-zA-Z0-9]/.test(username)) {
-		$.alert({
-			title: "Error!",
-			content: 'Input is not alphanumeric',
-			useBootstrap: false
-		});
+		bootbox.alert('Input is not alphanumeric');
 		$('#username').removeAttr('disabled').val("");
 		$('#register').removeAttr('disabled').click(registerUsername);
 		return;
@@ -514,21 +478,13 @@ function doCall() {
 	$('#call').attr('disabled', true).unbind('click');
 	var username = $('#peer').val();
 	if(username === "") {
-		$.alert({
-			title: "Error!",
-			content: "Insert a username to call (e.g., pluto)",
-			useBootstrap: false
-		});
+		bootbox.alert("Insert a username to call (e.g., pluto)");
 		$('#peer').removeAttr('disabled');
 		$('#call').removeAttr('disabled').click(doCall);
 		return;
 	}
 	if(/[^a-zA-Z0-9]/.test(username)) {
-		$.alert({
-			title: "Error!",
-			content: 'Input is not alphanumeric',
-			useBootstrap: false
-		});
+		bootbox.alert('Input is not alphanumeric');
 		$('#peer').removeAttr('disabled').val("");
 		$('#call').removeAttr('disabled').click(doCall);
 		return;
@@ -546,11 +502,7 @@ function doCall() {
 			},
 			error: function(error) {
 				Janus.error("WebRTC error...", error);
-				$.alert({
-					title: "Error!",
-					content: "WebRTC error... " + error,
-					useBootstrap: false
-				});
+				bootbox.alert("WebRTC error... " + error);
 			}
 		});
 }
@@ -567,16 +519,12 @@ function doHangup() {
 function sendData() {
 	var data = $('#datasend').val();
 	if(data === "") {
-		$.alert({
-			title: "Error!",
-			content: 'Insert a message to send on the DataChannel to your peer',
-			useBootstrap: false
-		});
+		bootbox.alert('Insert a message to send on the DataChannel to your peer');
 		return;
 	}
 	videocall.data({
 		text: data,
-		error: function(reason) { $.alert({title:"Error!",content:reason,useBootstrap:false}); },
+		error: function(reason) { bootbox.alert(reason); },
 		success: function() { $('#datasend').val(''); },
 	});
 }

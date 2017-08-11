@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-//		var server = "/janus";
+// 		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-//		var server = "ws://" + window.location.hostname + ":8188";
+// 		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -54,12 +54,12 @@ var opaqueId = "videoroomtest-"+Janus.randomString(12);
 
 var started = false;
 
+var joinedroom = null;
 var myusername = null;
 var myid = null;
 var mystream = null;
 // We use this other ID just to map our subscriptions to us
 var mypvtid = null;
-var joinedroom = null;
 
 var feeds = [];
 var bitrateTimer = [];
@@ -77,11 +77,7 @@ $(document).ready(function() {
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
-				$.alert({
-					title: "Error!",
-					content: "No WebRTC support... ",
-					useBootstrap: false
-				});
+				bootbox.alert("No WebRTC support... ");
 				return;
 			}
 			// Create session
@@ -112,11 +108,7 @@ $(document).ready(function() {
 								},
 								error: function(error) {
 									Janus.error("  -- Error attaching plugin...", error);
-									$.alert({
-										title:"Error!",
-										content: "Error attaching plugin... " + error,
-										useBootstrap: false
-									});
+									bootbox.alert("Error attaching plugin... " + error);
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -143,6 +135,20 @@ $(document).ready(function() {
 								webrtcState: function(on) {
 									Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
 									$("#videolocal").parent().parent().unblock();
+									// This controls allows us to override the global room bitrate cap
+									$('#bitrate').parent().parent().parent().parent().removeClass('hidden').show();
+									$('#bitrate a').click(function() {
+										var id = $(this).attr("id");
+										var bitrate = parseInt(id)*1000;
+										if(bitrate === 0) {
+											Janus.log("Not limiting bandwidth via REMB");
+										} else {
+											Janus.log("Capping bandwidth to " + bitrate + " via REMB");
+										}
+										$('#bitrateset').html($(this).html() + '<span class="caret"></span>').parent().removeClass('open');
+										sfutest.send({"message": { "request": "configure", "bitrate": bitrate }});
+										return false;
+									});
 								},
 								onmessage: function(msg, jsep) {
 									Janus.debug(" ::: Got a message (publisher) :::");
@@ -171,14 +177,8 @@ $(document).ready(function() {
 										} else if(event === "destroyed") {
 											// The room has been destroyed
 											Janus.warn("The room has been destroyed!");
-											$.alert({
-												title:"Warning!",
-												content: "The room has been destroyed",
-												buttons: {
-													OK: function() {
-														window.location.reload();
-													}
-												}
+											bootbox.alert("The room has been destroyed", function() {
+												window.location.reload();
 											});
 										} else if(event === "event") {
 											// Any new feed to attach to?
@@ -234,11 +234,17 @@ $(document).ready(function() {
 													remoteFeed.detach();
 												}
 											} else if(msg["error"] !== undefined && msg["error"] !== null) {
-												$.alert({
-													title: "Error!",
-													content: msg["error"],
-													useBootstrap: false
-												});
+												if(msg["error_code"] === 426) {
+													// This is a "no such room" error: give a more meaningful description
+													bootbox.alert(
+														"<p>Apparently room <code>" + joinedroom + "</code> " +
+														"does not exist...</p><p>Do you have an updated <code>janus.plugin.videoroom.cfg</code> " +
+														"configuration file? If not, make sure you copy the details of room <code>" + joinedroom + "</code> " +
+														"from that sample in your current configuration file, then restart Janus and try again."
+													);
+												} else {
+													bootbox.alert(msg["error"]);
+												}
 											}
 										}
 									}
@@ -295,19 +301,15 @@ $(document).ready(function() {
 									$('#videolocal').html('<button id="publish" class="btn btn-primary">Publish</button>');
 									$('#publish').click(function() { publishOwnFeed(true); });
 									$("#videolocal").parent().parent().unblock();
+									$('#bitrate').parent().parent().parent().parent().addClass('hidden');
+									$('#bitrate a').unbind('click');
 								}
 							});
 					},
 					error: function(error) {
 						Janus.error(error);
-						$.alert({
-							title: "Error!",
-							content: error,
-							buttons: {
-								OK: function() {
-									window.location.reload();
-								}
-							}
+						bootbox.alert(error, function() {
+							window.location.reload();
 						});
 					},
 					destroyed: function() {
@@ -380,11 +382,7 @@ function publishOwnFeed(useAudio) {
 				if (useAudio) {
 					 publishOwnFeed(false);
 				} else {
-					$.alert({
-						title: "Error!",
-						content: "WebRTC error... " + JSON.stringify(error),
-						useBootstrap: false
-					});
+					bootbox.alert("WebRTC error... " + JSON.stringify(error));
 					$('#publish').removeAttr('disabled').click(function() { publishOwnFeed(true); });
 				}
 			}
@@ -422,22 +420,24 @@ function newRemoteFeed(id, display) {
 				Janus.log("  -- This is a subscriber");
 				// We wait for the plugin to send us an offer
 				var listen = { "request": "join", "room": joinedroom, "ptype": "listener", "feed": id, "private_id": mypvtid };
+				// In case you don't want to receive audio, video or data, even if the
+				// publisher is sending them, set the 'offer_audio', 'offer_video' or
+				// 'offer_data' properties to false (they're true by default), e.g.:
+				// 		listen["offer_video"] = false;
 				remoteFeed.send({"message": listen});
 			},
 			error: function(error) {
 				Janus.error("  -- Error attaching plugin...", error);
-				$.alert({
-					title: "Error!",
-					content: "Error attaching plugin... " + error,
-					useBootstrap: false
-				});
+				bootbox.alert("Error attaching plugin... " + error);
 			},
 			onmessage: function(msg, jsep) {
 				Janus.debug(" ::: Got a message (listener) :::");
 				Janus.debug(JSON.stringify(msg));
 				var event = msg["videoroom"];
 				Janus.debug("Event: " + event);
-				if(event != undefined && event != null) {
+				if(msg["error"] !== undefined && msg["error"] !== null) {
+					bootbox.alert(msg["error"]);
+				} else if(event != undefined && event != null) {
 					if(event === "attached") {
 						// Subscriber created and attached
 						for(var i=1;i<6;i++) {
@@ -457,12 +457,6 @@ function newRemoteFeed(id, display) {
 						}
 						Janus.log("Successfully attached to feed " + remoteFeed.rfid + " (" + remoteFeed.rfdisplay + ") in room " + msg["room"]);
 						$('#remote'+remoteFeed.rfindex).removeClass('hidden').html(remoteFeed.rfdisplay).show();
-					} else if(msg["error"] !== undefined && msg["error"] !== null) {
-						$.alert({
-							title: "Error!",
-							content: msg["error"],
-							useBootstrap: false
-						});
 					} else {
 						// What has just happened?
 					}
@@ -485,11 +479,7 @@ function newRemoteFeed(id, display) {
 							},
 							error: function(error) {
 								Janus.error("WebRTC error:", error);
-								$.alert({
-									title: "Error!",
-									content: "WebRTC error... " + JSON.stringify(error),
-									useBootstrap: false
-								});
+								bootbox.alert("WebRTC error... " + JSON.stringify(error));
 							}
 						});
 				}
@@ -540,12 +530,18 @@ function newRemoteFeed(id, display) {
 							'<span class="no-video-text" style="font-size: 16px;">No remote video available</span>' +
 						'</div>');
 				}
-				if(adapter.browserDetails.browser === "chrome" || adapter.browserDetails.browser === "firefox") {
+				if(adapter.browserDetails.browser === "chrome" || adapter.browserDetails.browser === "firefox" ||
+						adapter.browserDetails.browser === "safari") {
 					$('#curbitrate'+remoteFeed.rfindex).removeClass('hidden').show();
 					bitrateTimer[remoteFeed.rfindex] = setInterval(function() {
 						// Display updated bitrate, if supported
 						var bitrate = remoteFeed.getBitrate();
 						$('#curbitrate'+remoteFeed.rfindex).text(bitrate);
+						// Check if the resolution changed too
+						var width = $("#remotevideo"+remoteFeed.rfindex).get(0).videoWidth;
+						var height = $("#remotevideo"+remoteFeed.rfindex).get(0).videoHeight;
+						if(width > 0 && height > 0)
+							$('#curres'+remoteFeed.rfindex).removeClass('hidden').text(width+'x'+height).show();
 					}, 1000);
 				}
 			},

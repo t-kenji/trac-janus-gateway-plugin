@@ -12,7 +12,7 @@
 // online demos at http://janus.conf.meetecho.com) you can just use a
 // relative path for the variable, e.g.:
 //
-//		var server = "/janus";
+// 		var server = "/janus";
 //
 // which will take care of this on its own.
 //
@@ -20,7 +20,7 @@
 // If you want to use the WebSockets frontend to Janus, instead, you'll
 // have to pass a different kind of address, e.g.:
 //
-//		var server = "ws://" + window.location.hostname + ":8188";
+// 		var server = "ws://" + window.location.hostname + ":8188";
 //
 // Of course this assumes that support for WebSockets has been built in
 // when compiling the gateway. WebSockets support has not been tested
@@ -68,13 +68,13 @@ var spinner = null;
 
 // Just an helper to generate random usernames
 function randomString(len, charSet) {
-	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	var randomString = '';
-	for (var i = 0; i < len; i++) {
-		var randomPoz = Math.floor(Math.random() * charSet.length);
-		randomString += charSet.substring(randomPoz,randomPoz+1);
-	}
-	return randomString;
+    charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var randomString = '';
+    for (var i = 0; i < len; i++) {
+    	var randomPoz = Math.floor(Math.random() * charSet.length);
+    	randomString += charSet.substring(randomPoz,randomPoz+1);
+    }
+    return randomString;
 }
 
 
@@ -89,11 +89,7 @@ $(document).ready(function() {
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
-				$.alert({
-					title: "Error!",
-					content: "No WebRTC support... ",
-					useBootstrap: false
-				});
+				bootbox.alert("No WebRTC support... ");
 				return;
 			}
 			// Create session
@@ -125,11 +121,7 @@ $(document).ready(function() {
 								},
 								error: function(error) {
 									Janus.error("  -- Error attaching plugin...", error);
-									$.alert({
-										title: "Error!",
-										content: "Error attaching plugin... " + error,
-										useBootstrap: false
-									});
+									bootbox.alert("Error attaching plugin... " + error);
 								},
 								consentDialog: function(on) {
 									Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
@@ -151,11 +143,7 @@ $(document).ready(function() {
 								webrtcState: function(on) {
 									Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
 									$("#screencapture").parent().unblock();
-									$.alert({
-										title: "Sharing",
-										content: "Your screen sharing session just started: pass the <b>" + room + "</b> session identifier to those who want to attend.",
-										useBootstrap: false
-									});
+									bootbox.alert("Your screen sharing session just started: pass the <b>" + room + "</b> session identifier to those who want to attend.");
 								},
 								onmessage: function(msg, jsep) {
 									Janus.debug(" ::: Got a message (publisher) :::");
@@ -182,11 +170,7 @@ $(document).ready(function() {
 														},
 														error: function(error) {
 															Janus.error("WebRTC error:", error);
-															$.alert({
-																title: "Error!",
-																content: "WebRTC error... " + JSON.stringify(error),
-																useBootstrap: false
-															});
+															bootbox.alert("WebRTC error... " + JSON.stringify(error));
 														}
 													});
 											} else {
@@ -220,23 +204,12 @@ $(document).ready(function() {
 												var leaving = msg["leaving"];
 												Janus.log("Publisher left: " + leaving);
 												if(role === "listener" && msg["leaving"] === source) {
-													$.alert({
-														title: "Sharing",
-														content: "The screen sharing session is over, the publisher left",
-														buttons: {
-															OK: function() {
-																window.location.reload();
-															}
-														},
-														useBootstrap: false
+													bootbox.alert("The screen sharing session is over, the publisher left", function() {
+														window.location.reload();
 													});
 												}
 											} else if(msg["error"] !== undefined && msg["error"] !== null) {
-												$.alert({
-													title: "Error!",
-													content: msg["error"],
-													useBootstrap: false
-												});
+												bootbox.alert(msg["error"]);
 											}
 										}
 									}
@@ -277,15 +250,8 @@ $(document).ready(function() {
 					},
 					error: function(error) {
 						Janus.error(error);
-						$.alert({
-							title: "Error!",
-							content: error,
-							buttons: {
-								OK: function() {
-									window.location.reload();
-								}
-							},
-							useBootstrap: false
+						bootbox.alert(error, function() {
+							window.location.reload();
 						});
 					},
 					destroyed: function() {
@@ -314,24 +280,13 @@ function switchToHttps() {
 function preShareScreen() {
 	// Make sure HTTPS is being used
 	if(window.location.protocol !== 'https:') {
-		$.alert({
-			title: "Error!",
-			content: 'Sharing your screen only works on HTTPS: click <b><a href="#" onclick="return switchToHttps();">here</a></b> to try the https:// version of this page',
-			useBootstrap: false
-		});
+		bootbox.alert('Sharing your screen only works on HTTPS: click <b><a href="#" onclick="return switchToHttps();">here</a></b> to try the https:// version of this page');
 		$('#start').attr('disabled', true);
 		return;
 	}
 	if(!Janus.isExtensionEnabled()) {
-		$.alert({
-			title: "Error!",
-			content: "You're using a recent version of Chrome but don't have the screensharing extension installed: click <b><a href='https://chrome.google.com/webstore/detail/janus-webrtc-screensharin/hapfgfdkleiggjjpfpenajgdnfckjpaj' target='_blank'>here</a></b> to do so",
-			buttons: {
-				OK: function() {
-					window.location.reload();
-				}
-			},
-			useBootstrap: false
+		bootbox.alert("You're using a recent version of Chrome but don't have the screensharing extension installed: click <b><a href='https://chrome.google.com/webstore/detail/janus-webrtc-screensharin/hapfgfdkleiggjjpfpenajgdnfckjpaj' target='_blank'>here</a></b> to do so", function() {
+			window.location.reload();
 		});
 		return;
 	}
@@ -341,11 +296,7 @@ function preShareScreen() {
 	$('#roomid').attr('disabled', true);
 	$('#join').attr('disabled', true).unbind('click');
 	if($('#desc').val() === "") {
-		$.alert({
-			title: "Error!",
-			content: "Please insert a description for the room",
-			useBootstrap: false
-		});
+		bootbox.alert("Please insert a description for the room");
 		$('#desc').removeAttr('disabled', true);
 		$('#create').removeAttr('disabled', true).click(preShareScreen);
 		$('#roomid').removeAttr('disabled', true);
@@ -355,9 +306,9 @@ function preShareScreen() {
 	capture = "screen";
 	if(navigator.mozGetUserMedia) {
 		// Firefox needs a different constraint for screen and window sharing
-		$.confirm({
+		bootbox.dialog({
 			title: "Share whole screen or a window?",
-			content: "Firefox handles screensharing in a different way: are you going to share the whole screen, or would you rather pick a single window/application to share instead?",
+			message: "Firefox handles screensharing in a different way: are you going to share the whole screen, or would you rather pick a single window/application to share instead?",
 			buttons: {
 				screen: {
 					text: "Share screen",
@@ -376,7 +327,7 @@ function preShareScreen() {
 					}
 				}
 			},
-			onClose: function() {
+			onEscape: function() {
 				$('#desc').removeAttr('disabled', true);
 				$('#create').removeAttr('disabled', true).click(preShareScreen);
 				$('#roomid').removeAttr('disabled', true);
@@ -425,11 +376,7 @@ function joinScreen() {
 	$('#join').attr('disabled', true).unbind('click');
 	var roomid = $('#roomid').val();
 	if(isNaN(roomid)) {
-		$.alert({
-			title: "Error!",
-			content: "Session identifiers are numeric only",
-			useBootstrap: false
-		});
+		bootbox.alert("Session identifiers are numeric only");
 		$('#desc').removeAttr('disabled', true);
 		$('#create').removeAttr('disabled', true).click(preShareScreen);
 		$('#roomid').removeAttr('disabled', true);
@@ -461,11 +408,7 @@ function newRemoteFeed(id, display) {
 			},
 			error: function(error) {
 				Janus.error("  -- Error attaching plugin...", error);
-				$.alert({
-					title: "Error!",
-					content: "Error attaching plugin... " + error,
-					useBootstrap: false
-				});
+				bootbox.alert("Error attaching plugin... " + error);
 			},
 			onmessage: function(msg, jsep) {
 				Janus.debug(" ::: Got a message (listener) :::");
@@ -504,11 +447,7 @@ function newRemoteFeed(id, display) {
 							},
 							error: function(error) {
 								Janus.error("WebRTC error:", error);
-								$.alert({
-									title: "Error!",
-									content: "WebRTC error... " + error,
-									useBootstrap: false
-								});
+								bootbox.alert("WebRTC error... " + error);
 							}
 						});
 				}
