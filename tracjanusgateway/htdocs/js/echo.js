@@ -115,7 +115,7 @@ $(document).ready(function() {
 												bootbox.alert("WebRTC error... " + JSON.stringify(error));
 											}
 										});
-									$('#start').removeAttr('disabled').html("Stop")
+									$('#start').removeAttr('disabled').html(_("Stop"))
 										.click(function() {
 											$(this).attr('disabled', true);
 											clearInterval(bitrateTimer);
@@ -264,18 +264,18 @@ $(document).ready(function() {
 										function() {
 											audioenabled = !audioenabled;
 											if(audioenabled)
-												$('#toggleaudio').html("Disable audio").removeClass("btn-success").addClass("btn-danger");
+												$('#toggleaudio').html(_("Disable audio")).removeClass("btn-success").addClass("btn-danger");
 											else
-												$('#toggleaudio').html("Enable audio").removeClass("btn-danger").addClass("btn-success");
+												$('#toggleaudio').html(_("Enable audio")).removeClass("btn-danger").addClass("btn-success");
 											echotest.send({"message": { "audio": audioenabled }});
 										});
 									$('#togglevideo').click(
 										function() {
 											videoenabled = !videoenabled;
 											if(videoenabled)
-												$('#togglevideo').html("Disable video").removeClass("btn-success").addClass("btn-danger");
+												$('#togglevideo').html(_("Disable video")).removeClass("btn-success").addClass("btn-danger");
 											else
-												$('#togglevideo').html("Enable video").removeClass("btn-danger").addClass("btn-success");
+												$('#togglevideo').html(_("Enable video")).removeClass("btn-danger").addClass("btn-success");
 											echotest.send({"message": { "video": videoenabled }});
 										});
 									$('#toggleaudio').parent().removeClass('hidden').show();

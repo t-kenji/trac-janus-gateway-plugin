@@ -16,6 +16,16 @@ classifiers = [
     'Programming Language :: Python',
 ]
 
+extra = {}
+
+try:
+    from trac.dist import get_l10n_js_cmdclass
+    cmdclass = get_l10n_js_cmdclass()
+    if cmdclass:
+        extra['cmdclass'] = cmdclass
+except ImportError:
+    pass
+
 setup(
     name = 'TracJanusGatewayPlugin',
     version = version,
@@ -32,8 +42,10 @@ setup(
         'tracjanusgateway': [
             'htdocs/css/*.css',
             'htdocs/js/*.js',
+            'htdocs/js/tracjanusgateway/*.js',
             'htdocs/img/*.png',
             'htdocs/fonts/*',
+            'locale/*/LC_MESSAGES/*.mo',
             'templates/*.html',
         ],
     },
@@ -46,4 +58,6 @@ setup(
             'tracjanusgateway = tracjanusgateway',
         ],
     },
+
+    **extra
 )

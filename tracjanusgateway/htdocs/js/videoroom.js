@@ -100,7 +100,7 @@ $(document).ready(function() {
 									$('#registernow').removeClass('hidden').show();
 									$('#register').click(registerUsername);
 									$('#username').focus();
-									$('#start-' + joinedroom).removeAttr('disabled').html("Stop")
+									$('#start-' + joinedroom).removeAttr('disabled').html(_("Stop"))
 										.click(function() {
 											$(this).attr('disabled', true);
 											janus.destroy();
@@ -264,10 +264,10 @@ $(document).ready(function() {
 									if($('#myvideo').length === 0) {
 										$('#videolocal').append('<video class="rounded centered" id="myvideo" width="100%" height="100%" autoplay muted="muted"/>');
 										// Add a 'mute' button
-										$('#videolocal').append('<button class="btn btn-warning btn-xs" id="mute" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;">Mute</button>');
+										$('#videolocal').append('<button class="btn btn-warning btn-xs" id="mute" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;">' + _('Mute') + '</button>');
 										$('#mute').click(toggleMute);
 										// Add an 'unpublish' button
-										$('#videolocal').append('<button class="btn btn-warning btn-xs" id="unpublish" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;">Unpublish</button>');
+										$('#videolocal').append('<button class="btn btn-warning btn-xs" id="unpublish" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;">' + _('Unpublish') + '</button>');
 										$('#unpublish').click(unpublishOwnFeed);
 									}
 									$('#publisher').removeClass('hidden').html(myusername).show();
@@ -298,7 +298,7 @@ $(document).ready(function() {
 								oncleanup: function() {
 									Janus.log(" ::: Got a cleanup notification: we are unpublished now :::");
 									mystream = null;
-									$('#videolocal').html('<button id="publish" class="btn btn-primary">Publish</button>');
+									$('#videolocal').html('<button id="publish" class="btn btn-primary">' + _('Publish') + '</button>');
 									$('#publish').click(function() { publishOwnFeed(true); });
 									$("#videolocal").parent().parent().unblock();
 									$('#bitrate').parent().parent().parent().parent().addClass('hidden');
@@ -345,7 +345,7 @@ function registerUsername() {
 		if(username === "") {
 			$('#you')
 				.removeClass().addClass('label label-warning')
-				.html("Insert your display name (e.g., pippo)");
+				.html(_("Insert your display name (e.g., pippo)"));
 			$('#username').removeAttr('disabled');
 			$('#register').removeAttr('disabled').click(registerUsername);
 			return;
@@ -353,7 +353,7 @@ function registerUsername() {
 		if(/[^a-zA-Z0-9]/.test(username)) {
 			$('#you')
 				.removeClass().addClass('label label-warning')
-				.html('Input is not alphanumeric');
+				.html(_('Input is not alphanumeric'));
 			$('#username').removeAttr('disabled').val("");
 			$('#register').removeAttr('disabled').click(registerUsername);
 			return;
@@ -397,7 +397,7 @@ function toggleMute() {
 	else
 		sfutest.muteAudio();
 	muted = sfutest.isAudioMuted();
-	$('#mute').html(muted ? "Unmute" : "Mute");
+	$('#mute').html(muted ? _("Unmute") : _("Mute"));
 }
 
 function unpublishOwnFeed() {

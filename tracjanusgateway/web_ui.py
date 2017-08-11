@@ -8,11 +8,15 @@ from trac.config import ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.text import unicode_quote
+from trac.util.translation import domain_functions
 from trac.web import IRequestHandler
 from trac.web.chrome import (
         INavigationContributor, ITemplateProvider,
         add_ctxtnav, add_stylesheet, add_script,
 )
+
+_, tag_, N_, ngettext, add_domain = domain_functions('tracjanusgateway',
+    '_', 'tag_', 'N_', 'ngettext', 'add_domain')
 
 class JanusGatewayPlugin(Component):
     """
@@ -30,6 +34,9 @@ class JanusGatewayPlugin(Component):
                              doc = """Room IDs for Janus WebRTC Gateway AudioRooms""")
 
     def __init__(self):
+        from pkg_resources import resource_filename
+
+        add_domain(self.env.path, resource_filename(__name__, 'locale'))
         pass
 
     # IPermissionRequestor methods
@@ -87,6 +94,9 @@ class JanusGatewayPlugin(Component):
             add_script(req, 'janus/js/spin.min.js')
             add_script(req, 'janus/js/compat.js')
             add_script(req, 'janus/js/janus.js')
+            self.env.log.info('locale: {}'.format(req.locale))
+            if req.locale is not None:
+                add_script(req, 'janus/js/tracjanusgateway/{}.js'.format(req.locale))
 
             if isinstance(req.remote_user, basestring):
                 username = req.remote_user
@@ -100,45 +110,35 @@ class JanusGatewayPlugin(Component):
 
             plugin = m.group('plugin')
             if plugin.startswith('echo'):
-                add_ctxtnav(req, 'Echo')
-                add_ctxtnav(req, 'VideoCall', href=req.href.janus('videocall'))
-                add_ctxtnav(req, 'VideoRoom', href=req.href.janus('videoroom'))
-                add_ctxtnav(req, 'AudioRoom', href=req.href.janus('audioroom'))
-                add_ctxtnav(req, 'ScreenSharing', href=req.href.janus('screensharing'))
+                add_ctxtnav(req, _('Echo'))
                 template = 'echo.html'
                 add_script(req, 'janus/js/echo.js')
-            elif plugin.startswith('videocall'):
-                add_ctxtnav(req, 'Echo', href=req.href.janus('echo'))
-                add_ctxtnav(req, 'VideoCall')
-                add_ctxtnav(req, 'VideoRoom', href=req.href.janus('videoroom'))
-                add_ctxtnav(req, 'AudioRoom', href=req.href.janus('audioroom'))
-                add_ctxtnav(req, 'ScreenSharing', href=req.href.janus('screensharing'))
+            else:
+                add_ctxtnav(req, _('Echo'), href=req.href.janus('echo'))
+            if plugin.startswith('videocall'):
+                add_ctxtnav(req, _('VideoCall'))
                 template = 'videocall.html'
                 add_script(req, 'janus/js/videocall.js')
-            elif plugin.startswith('videoroom'):
-                add_ctxtnav(req, 'Echo', href=req.href.janus('echo'))
-                add_ctxtnav(req, 'VideoCall', href=req.href.janus('videocall'))
-                add_ctxtnav(req, 'VideoRoom')
-                add_ctxtnav(req, 'AudioRoom', href=req.href.janus('audioroom'))
-                add_ctxtnav(req, 'ScreenSharing', href=req.href.janus('screensharing'))
+            else:
+                add_ctxtnav(req, _('VideoCall'), href=req.href.janus('videocall'))
+            if plugin.startswith('videoroom'):
+                add_ctxtnav(req, _('VideoRoom'))
                 template = 'videoroom.html'
                 add_script(req, 'janus/js/videoroom.js')
-            elif plugin.startswith('audioroom'):
-                add_ctxtnav(req, 'Echo', href=req.href.janus('echo'))
-                add_ctxtnav(req, 'VideoCall', href=req.href.janus('videocall'))
-                add_ctxtnav(req, 'VideoRoom', href=req.href.janus('videoroom'))
-                add_ctxtnav(req, 'AudioRoom')
-                add_ctxtnav(req, 'ScreenSharing', href=req.href.janus('screensharing'))
+            else:
+                add_ctxtnav(req, _('VideoRoom'), href=req.href.janus('videoroom'))
+            if plugin.startswith('audioroom'):
+                add_ctxtnav(req, _('AudioRoom'))
                 template = 'audioroom.html'
                 add_script(req, 'janus/js/audiobridge.js')
-            elif plugin.startswith('screensharing'):
-                add_ctxtnav(req, 'Echo', href=req.href.janus('echo'))
-                add_ctxtnav(req, 'VideoCall', href=req.href.janus('videocall'))
-                add_ctxtnav(req, 'VideoRoom', href=req.href.janus('videoroom'))
-                add_ctxtnav(req, 'AudioRoom', href=req.href.janus('audioroom'))
-                add_ctxtnav(req, 'ScreenSharing')
+            else:
+                add_ctxtnav(req, _('AudioRoom'), href=req.href.janus('audioroom'))
+            if plugin.startswith('screensharing'):
+                add_ctxtnav(req, _('ScreenSharing'))
                 template = 'screensharing.html'
                 add_script(req, 'janus/js/screensharing.js')
+            else:
+                add_ctxtnav(req, _('ScreenSharing'), href=req.href.janus('screensharing'))
         add_stylesheet(req, 'janus/css/janus.css')
 
         return (template, data, None)

@@ -100,3 +100,6 @@ ENV/
 
 # vim swap
 *.swp
+
+# javascript translations
+tracjanusgateway/htdocs/js/tracjanusgateway

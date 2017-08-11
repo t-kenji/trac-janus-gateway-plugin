@@ -96,7 +96,7 @@ $(document).ready(function() {
 									$('#registernow').removeClass('hidden').show();
 									$('#register').click(registerUsername);
 									$('#username').focus();
-									$('#start-' + joinedroom).removeAttr('disabled').html("Stop")
+									$('#start-' + joinedroom).removeAttr('disabled').html(_("Stop"))
 										.click(function() {
 											$(this).attr('disabled', true);
 											janus.destroy();
@@ -275,9 +275,9 @@ $(document).ready(function() {
 										function() {
 											audioenabled = !audioenabled;
 											if(audioenabled)
-												$('#toggleaudio').html("Mute").removeClass("btn-success").addClass("btn-danger");
+												$('#toggleaudio').html(_("Mute")).removeClass("btn-success").addClass("btn-danger");
 											else
-												$('#toggleaudio').html("Unmute").removeClass("btn-danger").addClass("btn-success");
+												$('#toggleaudio').html(_("Unmute")).removeClass("btn-danger").addClass("btn-success");
 											mixertest.send({message: { "request": "configure", "muted": !audioenabled }});
 										}).removeClass('hidden').show();
 
@@ -331,7 +331,7 @@ function registerUsername() {
 		if(username === "") {
 			$('#you')
 				.removeClass().addClass('label label-warning')
-				.html("Insert your display name (e.g., pippo)");
+				.html(_("Insert your display name (e.g., pippo)"));
 			$('#username').removeAttr('disabled');
 			$('#register').removeAttr('disabled').click(registerUsername);
 			return;
@@ -339,7 +339,7 @@ function registerUsername() {
 		if(/[^a-zA-Z0-9]/.test(username)) {
 			$('#you')
 				.removeClass().addClass('label label-warning')
-				.html('Input is not alphanumeric');
+				.html(_('Input is not alphanumeric'));
 			$('#username').removeAttr('disabled').val("");
 			$('#register').removeAttr('disabled').click(registerUsername);
 			return;

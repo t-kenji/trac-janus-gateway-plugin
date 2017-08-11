@@ -113,7 +113,7 @@ $(document).ready(function() {
 									$('#joinnow').removeClass('hidden').show();
 									$('#join').click(joinScreen);
 									$('#desc').focus();
-									$('#start').removeAttr('disabled').html("Stop")
+									$('#start').removeAttr('disabled').html(_("Stop"))
 										.click(function() {
 											$(this).attr('disabled', true);
 											janus.destroy();
