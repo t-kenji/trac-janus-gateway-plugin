@@ -34,7 +34,8 @@ bootbox = {
 			content: options.message,
 			closeIcon: options.closeButton,
 			buttons: options.buttons,
-			onEscape: options.onClose
+			onEscape: options.onClose,
+			useBootstrap: false
 		});
 	},
 	hideAll: function() {
