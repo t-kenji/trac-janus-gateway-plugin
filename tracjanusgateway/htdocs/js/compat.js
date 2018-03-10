@@ -12,9 +12,10 @@ if (String.prototype.format === undefined) {
 }
 
 bootbox = {
+	_dlgs: [],
 	alert: function(message, callback) {
 		"use strict";
-		$.alert({
+		var dlg = $.alert({
 			content: message,
 			buttons: {
 				OK: function() {
@@ -26,10 +27,12 @@ bootbox = {
 			title: false,
 			useBootstrap: false
 		});
+		this._dlgs.push(dlg);
+		return dlg;
 	},
 	dialog: function(options) {
 		"use strict";
-		$.confirm({
+		var dlg = $.confirm({
 			title: options.title,
 			content: options.message,
 			closeIcon: options.closeButton,
@@ -37,7 +40,13 @@ bootbox = {
 			onEscape: options.onClose,
 			useBootstrap: false
 		});
+		this._dlgs.push(dlg);
+		return dlg;
 	},
 	hideAll: function() {
+		for (let dlg of this._dlgs) {
+			dlg.close();
+		}
+		this._dlgs.length = 0;
 	}
 };

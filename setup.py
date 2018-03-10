@@ -45,6 +45,7 @@ setup(
             'htdocs/js/tracjanusgateway/*.js',
             'htdocs/img/*.png',
             'htdocs/fonts/*',
+            'htdocs/snd/*',
             'locale/*/LC_MESSAGES/*.mo',
             'templates/*.html',
         ],

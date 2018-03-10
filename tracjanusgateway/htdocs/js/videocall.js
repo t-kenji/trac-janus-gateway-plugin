@@ -59,11 +59,45 @@ var audioenabled = false;
 var videoenabled = false;
 
 var myusername = null;
-var yourusername = null;	
+var yourusername = null;
+
+document.addEventListener("DOMContentLoaded", function () {
+	if (!Notification) {
+		bootbox.alert("Desktop notifications not available in your browser. Try Chrome.");
+		return;
+	}
+
+	if (Notification.permission !== "granted") {
+		Notification.requestPermission().then((permission) => {
+			if (permission === "granted") {
+				console.log("notify permission: granted");
+			} else if (permission === "denied") {
+				console.log("notify permission: denied");
+			} else if (permission === "default") {
+				console.log("notify permission: default");
+			}
+		});
+	}
+});
+
+function notifyMe(title, message, icon) {
+	if (Notification.permission !== "granted") {
+		Notification.requestPermission();
+	} else {
+		var n = new Notification(title, {
+			icon: icon,
+			body: message,
+		});
+		n.onclick = () => {
+			window.focus();
+		};
+		return n;
+	}
+}
 
 $(document).ready(function() {
 	// Initialize the library (console debug enabled)
-	Janus.init({debug: true, callback: function() {
+	Janus.init({debug: false, callback: function() {
 		// Use a button to start the demo
 		$('#start').click(function() {
 			if(started)
@@ -143,14 +177,24 @@ $(document).ready(function() {
 											for(var mp in list) {
 												Janus.debug("  >> [" + list[mp] + "]");
 											}
+											list.some((v, i) => {
+												if (v == myusername) {
+													list.splice(i, 1);
+													return true;
+												}
+											});
+											$("#registered-users").text(list.join(', '));
 										} else if(result["event"] !== undefined && result["event"] !== null) {
 											var event = result["event"];
+											var incoming = null;
 											if(event === 'registered') {
 												myusername = result["username"];
 												Janus.log("Successfully registered as " + myusername + "!");
 												$('#youok').removeClass('hidden').show().html(_("Registered as '{0}'").format(myusername));
 												// Get a list of available peers, just for fun
-												videocall.send({"message": { "request": "list" }});
+												setInterval(function () {
+													videocall.send({"message": { "request": "list" }});
+												}, 1000);
 												// TODO Enable buttons to call now
 												$('#phone').removeClass('hidden').show();
 												$('#call').unbind('click').click(doCall);
@@ -162,6 +206,10 @@ $(document).ready(function() {
 											} else if(event === 'incomingcall') {
 												Janus.log("Incoming call from " + result["username"] + "!");
 												yourusername = result["username"];
+												notifyMe("Incoming call",
+												         "Incoming call from " + yourusername + "!",
+												         avatar_url + yourusername);
+												$('#snd-incoming').get(0).play();
 												// Notify user
 												bootbox.hideAll();
 												incoming = bootbox.dialog({
@@ -171,9 +219,10 @@ $(document).ready(function() {
 													buttons: {
 														success: {
 															text: "Answer",
-															btnClass: "btn-blue",
+															btnClass: "btn-green",
 															action: function() {
 																incoming = null;
+																$('#snd-incoming').get(0).pause();
 																$('#peer').val(result["username"]).attr('disabled', true);
 																videocall.createAnswer(
 																	{
@@ -201,6 +250,7 @@ $(document).ready(function() {
 															text: "Decline",
 															btnClass: "btn-red",
 															action: function() {
+																incoming = null;
 																doHangup();
 															}
 														}
@@ -224,6 +274,7 @@ $(document).ready(function() {
 											} else if(event === 'hangup') {
 												Janus.log("Call hung up by " + result["username"] + " (" + result["reason"] + ")!");
 												// Reset status
+												$('#snd-incoming').get(0).pause();
 												bootbox.hideAll();
 												videocall.hangup();
 												if(spinner !== null && spinner !== undefined)

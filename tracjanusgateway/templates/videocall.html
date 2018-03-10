@@ -41,8 +41,10 @@
               <input type="text" class="pure-input-3-4" placeholder="Who should we call?" id="peer" value="${remote_user}" onkeypress="return checkEnter(this, event);"></input>
             </div>
             <button class="button-small button-success pure-button" id="call">Call</button>
+            <div>Registered users: <span id="registered-users"></span></div>
           </div>
         </div>
+        <audio id="snd-incoming" src="${href.chrome('janus/snd/incoming.mp3')}" loop="loop"></audio>
       </div>
       <div class="pure-g hidden" id="videos">
         <div class="pure-u-1 pure-u-md-1-2">

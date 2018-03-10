@@ -13,6 +13,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import (
         INavigationContributor, ITemplateProvider,
         add_ctxtnav, add_stylesheet, add_script,
+        add_script_data,
 )
 
 _, tag_, N_, ngettext, add_domain = domain_functions('tracjanusgateway',
@@ -119,6 +120,7 @@ class JanusGatewayPlugin(Component):
                 add_ctxtnav(req, _('VideoCall'))
                 template = 'videocall.html'
                 add_script(req, 'janus/js/videocall.js')
+                add_script_data(req, {'avatar_url': req.href.avatar('')})
             else:
                 add_ctxtnav(req, _('VideoCall'), href=req.href.janus('videocall'))
             if plugin.startswith('videoroom'):
