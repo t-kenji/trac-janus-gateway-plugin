@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 });
 
+var notify = null;
 function notifyMe(title, message, icon) {
 	if (Notification.permission !== "granted") {
 		Notification.requestPermission();
@@ -90,6 +91,7 @@ function notifyMe(title, message, icon) {
 		});
 		n.onclick = () => {
 			window.focus();
+			n.close();
 		};
 		return n;
 	}
@@ -206,11 +208,11 @@ $(document).ready(function() {
 											} else if(event === 'incomingcall') {
 												Janus.log("Incoming call from " + result["username"] + "!");
 												yourusername = result["username"];
-												notifyMe("Incoming call",
-												         "Incoming call from " + yourusername + "!",
-												         avatar_url + yourusername);
-												$('#snd-incoming').get(0).play();
 												// Notify user
+												notify = notifyMe("Incoming call",
+												                  "Incoming call from " + yourusername + "!",
+												                  avatar_url + yourusername);
+												$('#snd-incoming').get(0).play();
 												bootbox.hideAll();
 												incoming = bootbox.dialog({
 													message: "Incoming call from " + yourusername + "!",
@@ -222,6 +224,8 @@ $(document).ready(function() {
 															btnClass: "btn-green",
 															action: function() {
 																incoming = null;
+																notify.close();
+																notify = null;
 																$('#snd-incoming').get(0).pause();
 																$('#peer').val(result["username"]).attr('disabled', true);
 																videocall.createAnswer(
@@ -274,6 +278,10 @@ $(document).ready(function() {
 											} else if(event === 'hangup') {
 												Janus.log("Call hung up by " + result["username"] + " (" + result["reason"] + ")!");
 												// Reset status
+												if (notify !== null) {
+													notify.close();
+													notify = null;
+												}
 												$('#snd-incoming').get(0).pause();
 												bootbox.hideAll();
 												videocall.hangup();

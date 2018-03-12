@@ -101,6 +101,8 @@ class JanusGatewayPlugin(Component):
 
             if isinstance(req.remote_user, basestring):
                 username = req.remote_user
+            elif isinstance(req.authname, basestring):
+                username = req.authname
             elif 'name' in req.session:
                 username = req.session.get('name', '')
             else:
