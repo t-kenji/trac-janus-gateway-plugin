@@ -110,6 +110,7 @@ class JanusGatewayPlugin(Component):
             data['username'] = username
             data['video_rooms'] = self.video_rooms
             data['audio_rooms'] = self.audio_rooms
+            add_script_data(req, {'debug': req.args.get('debug', 'false')})
 
             plugin = m.group('plugin')
             if plugin.startswith('echo'):

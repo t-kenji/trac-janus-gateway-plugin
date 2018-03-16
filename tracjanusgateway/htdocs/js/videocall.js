@@ -84,6 +84,7 @@ var notify = null;
 function notifyMe(title, message, icon) {
 	if (Notification.permission !== "granted") {
 		Notification.requestPermission();
+		return null;
 	} else {
 		var n = new Notification(title, {
 			icon: icon,
@@ -99,7 +100,7 @@ function notifyMe(title, message, icon) {
 
 $(document).ready(function() {
 	// Initialize the library (console debug enabled)
-	Janus.init({debug: false, callback: function() {
+	Janus.init({debug: (debug === "true"), callback: function() {
 		// Use a button to start the demo
 		$('#start').click(function() {
 			if(started)
@@ -134,6 +135,7 @@ $(document).ready(function() {
 									$('#start').removeAttr('disabled').html(_("Stop"))
 										.click(function() {
 											$(this).attr('disabled', true);
+											doHangup();
 											janus.destroy();
 										});
 								},
@@ -188,15 +190,15 @@ $(document).ready(function() {
 											$("#registered-users").text(list.join(', '));
 										} else if(result["event"] !== undefined && result["event"] !== null) {
 											var event = result["event"];
-											var incoming = null;
 											if(event === 'registered') {
 												myusername = result["username"];
 												Janus.log("Successfully registered as " + myusername + "!");
 												$('#youok').removeClass('hidden').show().html(_("Registered as '{0}'").format(myusername));
 												// Get a list of available peers, just for fun
+												videocall.send({"message": { "request": "list" }});
 												setInterval(function () {
 													videocall.send({"message": { "request": "list" }});
-												}, 1000);
+												}, 5000);
 												// TODO Enable buttons to call now
 												$('#phone').removeClass('hidden').show();
 												$('#call').unbind('click').click(doCall);
@@ -205,6 +207,9 @@ $(document).ready(function() {
 												Janus.log("Waiting for the peer to answer...");
 												// TODO Any ringtone?
 												bootbox.alert("Waiting for the peer to answer...");
+												$('#call').removeAttr('disabled').html(_('Hangup'))
+													.removeClass("button-success").addClass("button-error")
+													.unbind('click').click(doHangup);
 											} else if(event === 'incomingcall') {
 												Janus.log("Incoming call from " + result["username"] + "!");
 												yourusername = result["username"];
@@ -214,7 +219,7 @@ $(document).ready(function() {
 												                  avatar_url + yourusername);
 												$('#snd-incoming').get(0).play();
 												bootbox.hideAll();
-												incoming = bootbox.dialog({
+												var incoming = bootbox.dialog({
 													message: "Incoming call from " + yourusername + "!",
 													title: "Incoming call",
 													closeButton: false,
@@ -224,8 +229,10 @@ $(document).ready(function() {
 															btnClass: "btn-green",
 															action: function() {
 																incoming = null;
-																notify.close();
-																notify = null;
+																if (notify !== null) {
+																	notify.close();
+																	notify = null;
+																}
 																$('#snd-incoming').get(0).pause();
 																$('#peer').val(result["username"]).attr('disabled', true);
 																videocall.createAnswer(
@@ -240,7 +247,7 @@ $(document).ready(function() {
 																			videocall.send({"message": body, "jsep": jsep});
 																			$('#peer').attr('disabled', true);
 																			$('#call').removeAttr('disabled').html(_('Hangup'))
-																				.removeClass("btn-blue").addClass("btn-red")
+																				.removeClass("button-success").addClass("button-error")
 																				.unbind('click').click(doHangup);
 																		},
 																		error: function(error) {
@@ -272,9 +279,6 @@ $(document).ready(function() {
 												// Video call can start
 												if(jsep)
 													videocall.handleRemoteJsep({jsep: jsep});
-												$('#call').removeAttr('disabled').html(_('Hangup'))
-													.removeClass("btn-success").addClass("btn-danger")
-													.unbind('click').click(doHangup);
 											} else if(event === 'hangup') {
 												Janus.log("Call hung up by " + result["username"] + " (" + result["reason"] + ")!");
 												// Reset status
@@ -291,7 +295,7 @@ $(document).ready(function() {
 												$('#videos').hide();
 												$('#peer').removeAttr('disabled').val('');
 												$('#call').removeAttr('disabled').html(_('Call'))
-													.removeClass("btn-danger").addClass("btn-success")
+													.removeClass("button-error").addClass("button-success")
 													.unbind('click').click(doCall);
 												$('#toggleaudio').attr('disabled', true);
 												$('#togglevideo').attr('disabled', true);
@@ -317,7 +321,7 @@ $(document).ready(function() {
 										$('#videos').hide();
 										$('#peer').removeAttr('disabled').val('');
 										$('#call').removeAttr('disabled').html(_('Call'))
-											.removeClass("btn-danger").addClass("btn-success")
+											.removeClass("button-error").addClass("button-success")
 											.unbind('click').click(doCall);
 										$('#toggleaudio').attr('disabled', true);
 										$('#togglevideo').attr('disabled', true);
@@ -395,24 +399,24 @@ $(document).ready(function() {
 									// Enable audio/video buttons and bitrate limiter
 									audioenabled = true;
 									videoenabled = true;
-									$('#toggleaudio').html(_("Disable audio")).removeClass("btn-success").addClass("btn-danger")
+									$('#toggleaudio').html(_("Disable audio")).removeClass("button-success").addClass("button-error")
 											.unbind('click').removeAttr('disabled').click(
 										function() {
 											audioenabled = !audioenabled;
 											if(audioenabled)
-												$('#toggleaudio').html(_("Disable audio")).removeClass("btn-success").addClass("btn-danger");
+												$('#toggleaudio').html(_("Disable audio")).removeClass("button-success").addClass("button-error");
 											else
-												$('#toggleaudio').html(_("Enable audio")).removeClass("btn-danger").addClass("btn-success");
+												$('#toggleaudio').html(_("Enable audio")).removeClass("button-error").addClass("button-success");
 											videocall.send({"message": { "request": "set", "audio": audioenabled }});
 										});
-									$('#togglevideo').html(_("Disable video")).removeClass("btn-success").addClass("btn-danger")
+									$('#togglevideo').html(_("Disable video")).removeClass("button-success").addClass("button-error")
 											.unbind('click').removeAttr('disabled').click(
 										function() {
 											videoenabled = !videoenabled;
 											if(videoenabled)
-												$('#togglevideo').html(_("Disable video")).removeClass("btn-success").addClass("btn-danger");
+												$('#togglevideo').html(_("Disable video")).removeClass("button-success").addClass("button-error");
 											else
-												$('#togglevideo').html(_("Enable video")).removeClass("btn-danger").addClass("btn-success");
+												$('#togglevideo').html(_("Enable video")).removeClass("button-error").addClass("button-success");
 											videocall.send({"message": { "request": "set", "video": videoenabled }});
 										});
 									$('#toggleaudio').parent().removeClass('hidden').show();
@@ -475,7 +479,7 @@ $(document).ready(function() {
 									$('#videos').hide();
 									$('#peer').removeAttr('disabled').val('');
 									$('#call').removeAttr('disabled').html(_('Call'))
-										.removeClass("btn-danger").addClass("btn-success")
+										.removeClass("button-error").addClass("button-success")
 										.unbind('click').click(doCall);
 								}
 							});
