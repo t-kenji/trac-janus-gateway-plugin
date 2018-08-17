@@ -106,3 +106,18 @@ h3 button > ul > li > ul > li > a.pure-menu-link {
     margin-right: auto;
     width: 45%;
 }
+
+#registered-users:before {
+  content: "Call to ";
+}
+#registered-users {
+  line-height: 2.8em;
+}
+.callto {
+  padding: 0.2em 0.5em;
+  margin: 0 0.2em;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  background: #eee;
+  cursor: pointer;
+}

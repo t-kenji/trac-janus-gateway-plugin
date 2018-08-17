@@ -51,7 +51,14 @@ var janus = null;
 var videocall = null;
 var opaqueId = "videocalltest-"+Janus.randomString(12);
 
-var started = false;
+var STATUS = {
+	INITIAL: 1,
+	STARTED: 2,
+	WAITING: 3,
+	INCOMING: 4,
+	TAKING: 5,
+};
+var status = STATUS.INITIAL;
 var bitrateTimer = null;
 var spinner = null;
 
@@ -98,14 +105,18 @@ function notifyMe(title, message, icon) {
 	}
 }
 
+$(document).on("click", "#registered-users > span", function () {
+	$("#peer").val($(this).text());
+});
+
 $(document).ready(function() {
 	// Initialize the library (console debug enabled)
 	Janus.init({debug: (debug === "true"), callback: function() {
 		// Use a button to start the demo
 		$('#start').click(function() {
-			if(started)
+			if(status >= STATUS.STARTED)
 				return;
-			started = true;
+			status = STATUS.STARTED;
 			$(this).attr('disabled', true).unbind('click');
 			// Make sure the browser supports WebRTC
 			if(!Janus.isWebrtcSupported()) {
@@ -187,7 +198,11 @@ $(document).ready(function() {
 													return true;
 												}
 											});
-											$("#registered-users").text(list.join(', '));
+											users = '';
+											$.each(list, function () {
+												users += `<span class="callto">${this}</span>`;
+											});
+											$("#registered-users").empty().append(users);
 										} else if(result["event"] !== undefined && result["event"] !== null) {
 											var event = result["event"];
 											if(event === 'registered') {
@@ -198,11 +213,12 @@ $(document).ready(function() {
 												videocall.send({"message": { "request": "list" }});
 												setInterval(function () {
 													videocall.send({"message": { "request": "list" }});
-												}, 5000);
+												}, 10000);
 												// TODO Enable buttons to call now
 												$('#phone').removeClass('hidden').show();
 												$('#call').unbind('click').click(doCall);
 												$('#peer').focus();
+												status = STATUS.WAITING;
 											} else if(event === 'calling') {
 												Janus.log("Waiting for the peer to answer...");
 												// TODO Any ringtone?
@@ -219,8 +235,14 @@ $(document).ready(function() {
 												                  avatar_url + yourusername);
 												$('#snd-incoming').get(0).play();
 												bootbox.hideAll();
+												var message = "Incoming call from " + yourusername + "!";
+												if (result["comment"]) {
+													var comment = result["comment"];
+													message += "<br>comment: <strong>" + $("<span/>").text(comment).html() + "</strong>";
+													$("#comment").val(comment);
+												}
 												var incoming = bootbox.dialog({
-													message: "Incoming call from " + yourusername + "!",
+													message: message,
 													title: "Incoming call",
 													closeButton: false,
 													buttons: {
@@ -262,11 +284,13 @@ $(document).ready(function() {
 															btnClass: "btn-red",
 															action: function() {
 																incoming = null;
+																status = STATUS.WAITING;
 																doHangup();
 															}
 														}
 													}
 												});
+												status = STATUS.INCOMING;
 											} else if(event === 'accepted') {
 												bootbox.hideAll();
 												var peer = result["username"];
@@ -279,8 +303,12 @@ $(document).ready(function() {
 												// Video call can start
 												if(jsep)
 													videocall.handleRemoteJsep({jsep: jsep});
+												status = STATUS.TAKING;
 											} else if(event === 'hangup') {
 												Janus.log("Call hung up by " + result["username"] + " (" + result["reason"] + ")!");
+												if (status == STATUS.INCOMING) {
+													missedCallNotify();
+												}
 												// Reset status
 												if (notify !== null) {
 													notify.close();
@@ -289,8 +317,10 @@ $(document).ready(function() {
 												$('#snd-incoming').get(0).pause();
 												bootbox.hideAll();
 												videocall.hangup();
-												if(spinner !== null && spinner !== undefined)
+												if(spinner !== null && spinner !== undefined) {
 													spinner.stop();
+												}
+												$('#comment').val('');
 												$('#waitingvideo').remove();
 												$('#videos').hide();
 												$('#peer').removeAttr('disabled').val('');
@@ -302,6 +332,7 @@ $(document).ready(function() {
 												$('#bitrate').attr('disabled', true);
 												$('#curbitrate').hide();
 												$('#curres').hide();
+												status = STATUS.WAITING;
 											}
 										}
 									} else {
@@ -315,8 +346,9 @@ $(document).ready(function() {
 										}
 										// TODO Reset status
 										videocall.hangup();
-										if(spinner !== null && spinner !== undefined)
+										if(spinner !== null && spinner !== undefined) {
 											spinner.stop();
+										}
 										$('#waitingvideo').remove();
 										$('#videos').hide();
 										$('#peer').removeAttr('disabled').val('');
@@ -493,7 +525,8 @@ $(document).ready(function() {
 					destroyed: function() {
 						window.location.reload();
 					}
-				});
+				}
+			);
 		});
 	}});
 });
@@ -560,6 +593,10 @@ function doCall() {
 				Janus.debug("Got SDP!");
 				Janus.debug(jsep);
 				var body = { "request": "call", "username": $('#peer').val() };
+				var comment = $("#comment").val();
+				if (comment.length > 0) {
+					body["comment"] = comment;
+				}
 				videocall.send({"message": body, "jsep": jsep});
 			},
 			error: function(error) {
@@ -589,4 +626,9 @@ function sendData() {
 		error: function(reason) { bootbox.alert(reason); },
 		success: function() { $('#datasend').val(''); },
 	});
+}
+
+function missedCallNotify() {
+	Janus.log('Missed call from ' + yourusername);
+	$.get(event_uri + '/missedcall', {caller: yourusername, comment: $("#comment").val()});
 }

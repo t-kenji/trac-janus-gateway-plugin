@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TracJanusGatewayPlugin 0.4\n"
 "Report-Msgid-Bugs-To: protect.2501@gmail.com\n"
-"POT-Creation-Date: 2017-08-11 18:17+0000\n"
+"POT-Creation-Date: 2018-08-17 14:36+0900\n"
 "PO-Revision-Date: 2017-08-11 16:37+0000\n"
 "Last-Translator: t-kenji <protect.2501@gmail.com>\n"
 "Language: ja\n"
@@ -17,31 +17,31 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.3\n"
 
 #: tracjanusgateway/templates/echo.html:18
-#: tracjanusgateway/templates/janus.html:20 tracjanusgateway/web_ui.py:113
-#: tracjanusgateway/web_ui.py:117
+#: tracjanusgateway/templates/janus.html:20 tracjanusgateway/web_ui.py:161
+#: tracjanusgateway/web_ui.py:165
 msgid "Echo"
 msgstr "エコー"
 
-#: tracjanusgateway/templates/janus.html:21 tracjanusgateway/web_ui.py:119
-#: tracjanusgateway/web_ui.py:123
+#: tracjanusgateway/templates/janus.html:21 tracjanusgateway/web_ui.py:167
+#: tracjanusgateway/web_ui.py:172
 msgid "VideoCall"
 msgstr "ビデオ通話"
 
-#: tracjanusgateway/templates/janus.html:22 tracjanusgateway/web_ui.py:125
-#: tracjanusgateway/web_ui.py:129
+#: tracjanusgateway/templates/janus.html:22 tracjanusgateway/web_ui.py:174
+#: tracjanusgateway/web_ui.py:178
 msgid "VideoRoom"
 msgstr "ビデオ会議"
 
-#: tracjanusgateway/templates/janus.html:23 tracjanusgateway/web_ui.py:131
-#: tracjanusgateway/web_ui.py:135
+#: tracjanusgateway/templates/janus.html:23 tracjanusgateway/web_ui.py:180
+#: tracjanusgateway/web_ui.py:184
 msgid "AudioRoom"
 msgstr "音声会議"
 
-#: tracjanusgateway/templates/janus.html:24 tracjanusgateway/web_ui.py:137
-#: tracjanusgateway/web_ui.py:141
+#: tracjanusgateway/templates/janus.html:24 tracjanusgateway/web_ui.py:186
+#: tracjanusgateway/web_ui.py:190
 msgid "ScreenSharing"
 msgstr "画面共有"
 
@@ -112,70 +112,70 @@ msgid "Janus WebRTC Gateway: Echo"
 msgstr "コミュニケーション: エコー"
 
 #: tracjanusgateway/templates/echo.html:30
-#: tracjanusgateway/templates/videocall.html:50
+#: tracjanusgateway/templates/videocall.html:53
 msgid "Local Stream"
 msgstr "ローカルストリーム"
 
 #: tracjanusgateway/templates/echo.html:32
-#: tracjanusgateway/templates/videocall.html:52
+#: tracjanusgateway/templates/videocall.html:55
 msgid "Disable audio"
 msgstr "音声無効化"
 
 #: tracjanusgateway/templates/echo.html:33
-#: tracjanusgateway/templates/videocall.html:53
+#: tracjanusgateway/templates/videocall.html:56
 msgid "Disable video"
 msgstr "映像無効化"
 
 #: tracjanusgateway/templates/echo.html:37
-#: tracjanusgateway/templates/videocall.html:57
+#: tracjanusgateway/templates/videocall.html:60
 #: tracjanusgateway/templates/videoroom.html:61
 msgid "Bandwidth"
 msgstr "帯域幅"
 
 #: tracjanusgateway/templates/echo.html:39
-#: tracjanusgateway/templates/videocall.html:59
+#: tracjanusgateway/templates/videocall.html:62
 #: tracjanusgateway/templates/videoroom.html:63
 msgid "No limit"
 msgstr "無制限"
 
 #: tracjanusgateway/templates/echo.html:40
-#: tracjanusgateway/templates/videocall.html:60
+#: tracjanusgateway/templates/videocall.html:63
 #: tracjanusgateway/templates/videoroom.html:64
 msgid "Cap to 128kbit"
 msgstr "容量を 128kbit に制限"
 
 #: tracjanusgateway/templates/echo.html:41
-#: tracjanusgateway/templates/videocall.html:61
+#: tracjanusgateway/templates/videocall.html:64
 #: tracjanusgateway/templates/videoroom.html:65
 msgid "Cap to 256kbit"
 msgstr "容量を 256kbit に制限"
 
 #: tracjanusgateway/templates/echo.html:42
-#: tracjanusgateway/templates/videocall.html:62
+#: tracjanusgateway/templates/videocall.html:65
 #: tracjanusgateway/templates/videoroom.html:66
 msgid "Cap to 512kbit"
 msgstr "容量を 512kbit に制限"
 
 #: tracjanusgateway/templates/echo.html:43
-#: tracjanusgateway/templates/videocall.html:63
+#: tracjanusgateway/templates/videocall.html:66
 #: tracjanusgateway/templates/videoroom.html:67
 msgid "Cap to 1mbit"
 msgstr "容量を 1mbit に制限"
 
 #: tracjanusgateway/templates/echo.html:44
-#: tracjanusgateway/templates/videocall.html:64
+#: tracjanusgateway/templates/videocall.html:67
 #: tracjanusgateway/templates/videoroom.html:68
 msgid "Cap to 1.5mbit"
 msgstr "容量を 1.5mbit に制限"
 
 #: tracjanusgateway/templates/echo.html:45
-#: tracjanusgateway/templates/videocall.html:65
+#: tracjanusgateway/templates/videocall.html:68
 #: tracjanusgateway/templates/videoroom.html:69
 msgid "Cap to 2mbit"
 msgstr "容量を 2mbit に制限"
 
 #: tracjanusgateway/templates/echo.html:59
-#: tracjanusgateway/templates/videocall.html:79
+#: tracjanusgateway/templates/videocall.html:82
 msgid "Remote Stream"
 msgstr "リモートストリーム"
 
@@ -219,11 +219,11 @@ msgstr "コミュニケーション: ビデオ通話"
 msgid "Video Call"
 msgstr "ビデオ通話"
 
-#: tracjanusgateway/templates/videocall.html:34
+#: tracjanusgateway/templates/videocall.html:33
 msgid "Register"
 msgstr "登録"
 
-#: tracjanusgateway/templates/videocall.html:43
+#: tracjanusgateway/templates/videocall.html:42
 msgid "Call"
 msgstr "通話"
 
