@@ -370,7 +370,7 @@ $(document).ready(function() {
 									Janus.debug(JSON.stringify(stream));
 									$('#videos').removeClass('hidden').show();
 									if($('#myvideo').length === 0)
-										$('#videoleft').append('<video class="rounded centered" id="myvideo" width=320 height=240 autoplay muted="muted"/>');
+										$('#videoleft').append('<video class="rounded centered justfit" id="myvideo" autoplay muted="muted"/>');
 									Janus.attachMediaStream($('#myvideo').get(0), stream);
 									$("#myvideo").get(0).muted = "muted";
 									$("#videoleft").parent().block({
@@ -382,7 +382,7 @@ $(document).ready(function() {
 										}
 									});
 									// No remote video yet
-									$('#videoright').append('<video class="rounded centered" id="waitingvideo" width=320 height=240 />');
+									$('#videoright').append('<video class="rounded centered justfit" id="waitingvideo" />');
 									if(spinner == null) {
 										var target = document.getElementById('videoright');
 										spinner = new Spinner({top:100}).spin(target);
@@ -404,7 +404,7 @@ $(document).ready(function() {
 									Janus.debug(" ::: Got a remote stream :::");
 									Janus.debug(JSON.stringify(stream));
 									if($('#remotevideo').length === 0)
-										$('#videoright').append('<video class="rounded centered hidden" id="remotevideo" width=320 height=240 autoplay/>');
+										$('#videoright').append('<video class="rounded centered hidden justfit" id="remotevideo" autoplay/>');
 									// Show the video, hide the spinner and show the resolution when we get a playing event
 									$("#remotevideo").bind("playing", function () {
 										$('#waitingvideo').remove();
